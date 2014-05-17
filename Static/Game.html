@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Jackal game</title>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="Script/Game.js"></script>
+    <script type="text/javascript" src="Script/Field.js"></script>
+    <script type="text/javascript" src="Script/Cell.js"></script>
+    <script type="text/javascript" src="Script/CellView.js"></script>
+    <script type="text/javascript" src="Script/Pirate.js"></script>
+    <script type="text/javascript" src="Script/PirateView.js"></script>
+    <script type="text/javascript" src="Script/Player.js"></script>
+    <script type="text/javascript" src="Script/Allocator.js"></script>
+
+    <link href="Style/Style.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="gameContainer"></div>
+
+    <script type="text/javascript">
+        $(function () {
+
+            var model = {
+                players: [{
+                    id: 1,
+                    name: 'mcgee'
+                }],
+                cells: [{
+                    id: 1,
+                    type: 0,
+                    coords: [0, 0]
+                },
+                {
+                    id: 2,
+                    type: 0,
+                    coords: [1, 0]
+                },
+                {
+                    id: 3,
+                    type: 0,
+                    coords: [0, 1]
+                },
+                {
+                    id: 4,
+                    type: 0,
+                    coords: [1, 1]
+                }],
+                pirates: [{
+                    id: 1,
+                    playerId: 1,
+                    cellId: 3
+                }]
+            };
+
+            var game = new window.Jackal.Game();
+            game.init(model);
+            game.render($('.gameContainer'));
+            game.bindEvents();
+        });
+    </script>
+</body>
+</html>

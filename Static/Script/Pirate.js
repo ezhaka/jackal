@@ -5,13 +5,31 @@
     }
 
     window.Jackal.Pirate = function(modelMeta) {
-        var pThis = this;
+        var pThis = this,
+            view;
 
         pThis.render = render;
+        pThis.getId = getId;
 
-        function render() {
-            return window.Jackal.PirateTemplate({ id: modelMeta.id });
+        /*
+        position = {
+            coords: [px, px],
+            size: [px, px]
         }
+         */
+        function render(position) {
+            return view.render(position);
+        }
+
+        function getId() {
+            return modelMeta.id;
+        }
+
+        function init() {
+            view = new window.Jackal.PirateView({ id: modelMeta.id });
+        }
+
+        init();
     };
 
 })();
