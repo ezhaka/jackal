@@ -18,15 +18,26 @@
             view;
 
         pThis.render = render;
+        pThis.bindEvents = bindEvents;
         pThis.coords = coords;
         pThis.getPiratePosition = getPiratePosition;
         pThis.getOffset = getOffset;
         pThis.getId = getId;
         pThis.getMovingCapabilities = getMovingCapabilities;
-        pThis.highlight = highlight;
+        pThis.toggleHighlight = toggleHighlight;
+
+        pThis.Click = new window.Jackal.Event(pThis);
 
         function render() {
             return view.render();
+        }
+
+        function bindEvents() {
+            view.bindEvents();
+
+            view.Click.addHandler(function () {
+                pThis.Click.fireHandlers();
+            });
         }
 
         function coords() {
@@ -64,8 +75,8 @@
             return view.getOffset();
         }
 
-        function highlight() {
-            view.highlight();
+        function toggleHighlight(highlighted) {
+            view.toggleHighlight(highlighted);
         }
 
         /*

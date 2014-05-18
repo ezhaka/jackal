@@ -17,6 +17,10 @@
         pThis.bindEvents = bindEvents;
         pThis.getPirateCell = getPirateCell;
         pThis.highlightAvailableCells = highlightAvailableCells;
+        pThis.removeCellsHighlight = removeCellsHighlight;
+        pThis.canMoveTo = canMoveTo;
+
+        pThis.CellClick = new window.Jackal.Event(pThis);
 
         // todo: extract to view
         function render() {
@@ -46,6 +50,15 @@
         }
 
         function bindEvents() {
+            cells.forEach(function (cell) {
+                cell.bindEvents();
+                cell.Click.addHandler(onCellClick);
+            });
+        }
+
+        function onCellClick(cell, args) {
+            var newArgs = $.extend(args || {}, { cell: cell });
+            pThis.CellClick.fireHandlers(newArgs);
         }
 
         function getCellsByCoords(coordsList) {
@@ -82,7 +95,7 @@
                     [currentCoords[0] + 1, currentCoords[1]],
                     [currentCoords[0] + 1, currentCoords[1] - 1],
                     [currentCoords[0] + 1, currentCoords[1] + 1]
-                ])
+                ]);
             }
 
             // filter with another pirates...
@@ -94,7 +107,16 @@
         function highlightAvailableCells(pirate) {
             var availableCells = getAvailableCells(pirate);
 
-            availableCells.forEach(function (c) { c.highlight(); });
+            availableCells.forEach(function (c) { c.toggleHighlight(true); });
+        }
+
+        function canMoveTo(pirate, cell) {
+            var availableCells = getAvailableCells(pirate);
+            return availableCells.filter(function (ac) { return ac.getId() == cell.getId(); }).length > 0;
+        }
+
+        function removeCellsHighlight() {
+            cells.forEach(function (c) { c.toggleHighlight(false); });
         }
 
         function getPirateCell(pirateId) {
@@ -106,7 +128,6 @@
             cells = modelMeta.cells.map(function (c) {
                 return new window.Jackal.Cell($.extend(c, { allocator: modelMeta.allocator }));
             });
-
         }
 
         init();

@@ -6,11 +6,13 @@
 
     window.Jackal.PirateView = function (model) {
         var pThis = this,
-            $node;
+            $node,
+            selectedClass = 'selected';
 
         pThis.render = render;
         pThis.bindEvents = bindEvents;
         pThis.select = select;
+        pThis.deselect = deselect;
         pThis.Click = new window.Jackal.Event(pThis);
 
         /*
@@ -34,7 +36,11 @@
         }
 
         function select() {
-            $node.addClass('selected');
+            $node.addClass(selectedClass);
+        }
+
+        function deselect() {
+            $node.removeClass(selectedClass);
         }
 
         function bindEvents() {

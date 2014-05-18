@@ -6,12 +6,16 @@
 
     window.Jackal.Pirate = function(modelMeta) {
         var pThis = this,
-            view;
+            view,
+            isSelected;
 
         pThis.render = render;
         pThis.getId = getId;
         pThis.bindEvents = bindEvents;
         pThis.select = select;
+        pThis.deselect = deselect;
+        pThis.getIsSelected = getIsSelected;
+
         pThis.Click = new window.Jackal.Event(pThis);
 
         /*
@@ -41,7 +45,17 @@
         }
 
         function select() {
+            isSelected = true;
             view.select();
+        }
+
+        function deselect() {
+            isSelected = false;
+            view.deselect();
+        }
+
+        function getIsSelected() {
+            return isSelected;
         }
 
         init();

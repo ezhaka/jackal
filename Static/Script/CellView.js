@@ -9,9 +9,12 @@
             $node;
 
         pThis.render = render;
+        pThis.bindEvents = bindEvents;
         pThis.getPiratePosition = getPiratePosition;
         pThis.getOffset = getOffset;
-        pThis.highlight = highlight;
+        pThis.toggleHighlight = toggleHighlight;
+
+        pThis.Click = new window.Jackal.Event(pThis);
 
         function render() {
             $node = $('<div class="cell" />');
@@ -41,8 +44,12 @@
             };
         }
 
-        function highlight() {
-            $node.addClass('highlighted');
+        function bindEvents() {
+            $node.click(function () { pThis.Click.fireHandlers(); });
+        }
+
+        function toggleHighlight(highlighted) {
+            ($node[highlighted ? 'addClass' : 'removeClass'])('highlighted');
         }
 
         function getOffset() {

@@ -96,6 +96,8 @@
         function bindEvents() {
             model.field.bindEvents();
 
+            model.field.CellClick.addHandler(onCellClick);
+
             model.pirates.forEach(function (pirate) {
                 pirate.bindEvents();
                 pirate.Click.addHandler(onPirateClick);
@@ -105,6 +107,29 @@
         function onPirateClick(sender, args) {
             sender.select();
             model.field.highlightAvailableCells(sender);
+        }
+
+        function getSelectedPirate() {
+            var selectedPirate = model.pirates.filter(function (p) {
+                return p.getIsSelected();
+            });
+
+            return selectedPirate.length > 0 ? selectedPirate[0] : null;
+        }
+
+        function onCellClick(field, args) {
+            var cell = args.cell;
+            var selectedPirate = getSelectedPirate();
+
+            if (!selectedPirate) {
+                return;
+            }
+
+            if (!model.field.canMoveTo(selectedPirate, cell)) {
+                selectedPirate.deselect();
+                model.field.removeCellsHighlight();
+            }
+
         }
     };
 
