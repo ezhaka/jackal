@@ -16,7 +16,9 @@
         pThis.render = render;
         pThis.bindEvents = bindEvents;
         pThis.getPirateCell = getPirateCell;
+        pThis.highlightAvailableCells = highlightAvailableCells;
 
+        // todo: extract to view
         function render() {
             var result = $('<table class="field" />');
 
@@ -44,6 +46,55 @@
         }
 
         function bindEvents() {
+        }
+
+        function getCellsByCoords(coordsList) {
+            return cells.filter(function (cell) {
+                var cellCoords = cell.coords();
+                var matchFound = false;
+
+                coordsList.forEach(function (coords) {
+                    if (coords[0] == cellCoords[0] && coords[1] == cellCoords[1]) {
+                        matchFound = true;
+                    }
+                });
+
+                return matchFound;
+            })
+        }
+
+        function getAvailableCells(pirate) {
+            var pirateId = pirate.getId();
+            var pirateCell = getPirateCell(pirateId);
+            var currentCoords = pirateCell.coords();
+
+            var movingCapabilities = pirateCell.getMovingCapabilities(pirateId);
+
+            var availableCells = [];
+
+            if (movingCapabilities.type == window.Jackal.movingCapabilites.neighbor) {
+                availableCells = getCellsByCoords([
+                    [currentCoords[0], currentCoords[1] - 1],
+                    [currentCoords[0], currentCoords[1] + 1],
+                    [currentCoords[0] - 1, currentCoords[1]],
+                    [currentCoords[0] - 1, currentCoords[1] - 1],
+                    [currentCoords[0] - 1, currentCoords[1] + 1],
+                    [currentCoords[0] + 1, currentCoords[1]],
+                    [currentCoords[0] + 1, currentCoords[1] - 1],
+                    [currentCoords[0] + 1, currentCoords[1] + 1]
+                ])
+            }
+
+            // filter with another pirates...
+            // filter with water
+
+            return availableCells;
+        }
+
+        function highlightAvailableCells(pirate) {
+            var availableCells = getAvailableCells(pirate);
+
+            availableCells.forEach(function (c) { c.highlight(); });
         }
 
         function getPirateCell(pirateId) {

@@ -9,6 +9,9 @@
             $node;
 
         pThis.render = render;
+        pThis.bindEvents = bindEvents;
+        pThis.select = select;
+        pThis.Click = new window.Jackal.Event(pThis);
 
         /*
          position = {
@@ -28,6 +31,16 @@
             });
 
             return $node;
+        }
+
+        function select() {
+            $node.addClass('selected');
+        }
+
+        function bindEvents() {
+            $node.click(function () {
+                pThis.Click.fireHandlers();
+            })
         }
     }
 

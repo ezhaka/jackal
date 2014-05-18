@@ -10,6 +10,9 @@
 
         pThis.render = render;
         pThis.getId = getId;
+        pThis.bindEvents = bindEvents;
+        pThis.select = select;
+        pThis.Click = new window.Jackal.Event(pThis);
 
         /*
         position = {
@@ -25,8 +28,20 @@
             return modelMeta.id;
         }
 
+        function bindEvents() {
+            view.bindEvents();
+        }
+
         function init() {
             view = new window.Jackal.PirateView({ id: modelMeta.id });
+
+            view.Click.addHandler(function (args) {
+                pThis.Click.fireHandlers(args);
+            })
+        }
+
+        function select() {
+            view.select();
         }
 
         init();

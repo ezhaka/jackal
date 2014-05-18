@@ -22,6 +22,8 @@
         pThis.getPiratePosition = getPiratePosition;
         pThis.getOffset = getOffset;
         pThis.getId = getId;
+        pThis.getMovingCapabilities = getMovingCapabilities;
+        pThis.highlight = highlight;
 
         function render() {
             return view.render();
@@ -60,6 +62,24 @@
 
         function getOffset() {
             return view.getOffset();
+        }
+
+        function highlight() {
+            view.highlight();
+        }
+
+        /*
+        returns
+        {
+            type: 0,
+            direction: 0,
+            haveToMakeAnotherStep: 0
+        }
+         */
+        function getMovingCapabilities(pirateId) {
+            return {
+                type: window.Jackal.movingCapabilites.neighbor
+            }
         }
 
         function init() {

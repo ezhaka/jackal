@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <title>Jackal game</title>
     <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="Script/Event.js"></script>
     <script type="text/javascript" src="Script/Game.js"></script>
+    <script type="text/javascript" src="Script/MovingCapabilites.js"></script>
     <script type="text/javascript" src="Script/Field.js"></script>
     <script type="text/javascript" src="Script/Cell.js"></script>
     <script type="text/javascript" src="Script/CellView.js"></script>
@@ -39,18 +41,44 @@
                 {
                     id: 3,
                     type: 0,
-                    coords: [0, 1]
+                    coords: [2, 0]
                 },
                 {
                     id: 4,
                     type: 0,
+                    coords: [0, 1]
+                },
+                {
+                    id: 5,
+                    type: 0,
                     coords: [1, 1]
+                },
+                {
+                    id: 6,
+                    type: 0,
+                    coords: [2, 1]
+                },
+                {
+                    id: 7,
+                    type: 0,
+                    coords: [0, 2]
+                },
+                {
+                    id: 8,
+                    type: 0,
+                    coords: [1, 2]
+                },
+                {
+                    id: 9,
+                    type: 0,
+                    coords: [2, 2]
                 }],
                 pirates: [{
                     id: 1,
                     playerId: 1,
                     cellId: 3
-                }]
+                }],
+                fieldSize: [3, 3]
             };
 
             var game = new window.Jackal.Game();

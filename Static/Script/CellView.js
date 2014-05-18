@@ -11,6 +11,7 @@
         pThis.render = render;
         pThis.getPiratePosition = getPiratePosition;
         pThis.getOffset = getOffset;
+        pThis.highlight = highlight;
 
         function render() {
             $node = $('<div class="cell" />');
@@ -38,6 +39,10 @@
                 ],
                 size: [defaultPirateWidth, defaultPirateHeight]
             };
+        }
+
+        function highlight() {
+            $node.addClass('highlighted');
         }
 
         function getOffset() {

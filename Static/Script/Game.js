@@ -40,7 +40,7 @@
             model.field = new window.Jackal.Field({
                 cells: modelMeta.cells,
                 pirates: modelMeta.pirates,
-                fieldSize: [2, 2],
+                fieldSize: modelMeta.fieldSize,
                 allocator: getAllocator(modelMeta.pirates)
             });
 
@@ -53,23 +53,29 @@
             $container.html(model.field.render());
 
             model.pirates.forEach(function (pirate) {
-                var pirateCell = model.field.getPirateCell(pirate.getId());
-                var relativePosition = pirateCell.getPiratePosition(pirate.getId());
+                var $pirateNode = renderPirate(pirate);
 
-                if (!relativePosition)
-                {
-                    return;
+                if ($pirateNode) {
+                    $container.append($pirateNode);
                 }
-
-                var cellCoords = pirateCell.getOffset();
-
-                var $pirateNode = pirate.render({
-                    coords: [relativePosition.coords[0] + cellCoords[0], relativePosition.coords[1] + cellCoords[1]],
-                    size: relativePosition.size
-                });
-
-                $container.append($pirateNode);
             })
+        }
+
+        function renderPirate(pirate) {
+            var pirateCell = model.field.getPirateCell(pirate.getId());
+            var relativePosition = pirateCell.getPiratePosition(pirate.getId());
+
+            if (!relativePosition)
+            {
+                return null;
+            }
+
+            var cellCoords = pirateCell.getOffset();
+
+            return pirate.render({
+                coords: [relativePosition.coords[0] + cellCoords[0], relativePosition.coords[1] + cellCoords[1]],
+                size: relativePosition.size
+            });
         }
 
         function getAllocator(piratesMeta) {
@@ -89,6 +95,16 @@
 
         function bindEvents() {
             model.field.bindEvents();
+
+            model.pirates.forEach(function (pirate) {
+                pirate.bindEvents();
+                pirate.Click.addHandler(onPirateClick);
+            })
+        }
+
+        function onPirateClick(sender, args) {
+            sender.select();
+            model.field.highlightAvailableCells(sender);
         }
     };
 

@@ -4,8 +4,16 @@
     border: 1px solid black;
 }
 
+.cell.highlighted {
+    border: 1px solid red;
+}
+
 .pirate {
     position: absolute;
     border-radius: 100%;
     border: 1px solid red;
+}
+
+.pirate.selected {
+    background: red;
 }
