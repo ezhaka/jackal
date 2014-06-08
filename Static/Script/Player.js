@@ -1,11 +1,11 @@
 (function () {
 
-    if (!window.Jackal) {
-        window.Jackal = {};
-    }
+	if (!window.Jackal) {
+		window.Jackal = {};
+	}
 
-    window.Jackal.Player = function(modelMeta) {
-        var pThis = this;
-    };
+	window.Jackal.Player = function (modelMeta) {
+		var pThis = this;
+	};
 
 })();

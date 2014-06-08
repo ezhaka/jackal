@@ -1,103 +1,105 @@
 (function () {
 
-    if (!window.Jackal) {
-        window.Jackal = {};
-    }
+	if (!window.Jackal) {
+		window.Jackal = {};
+	}
 
-    /*
-    Accepts model:
-    {
-        id: 0,
-        type: 0,
-        allocator: window.Jackal.Allocator
-    }
-    */
+	/*
+	 Accepts model:
+	 {
+	 id: 0,
+	 type: 0,
+	 allocator: window.Jackal.Allocator
+	 }
+	 */
 
-    window.Jackal.Cell = function(modelMeta) {
-        var pThis = this,
-            view;
+	window.Jackal.Cell = function (modelMeta) {
+		var pThis = this,
+			view;
 
-        pThis.render = render;
-        pThis.bindEvents = bindEvents;
-        pThis.coords = coords;
-        pThis.getPiratePosition = getPiratePosition;
-        pThis.getOffset = getOffset;
-        pThis.getId = getId;
-        pThis.getMovingCapabilities = getMovingCapabilities;
-        pThis.toggleHighlight = toggleHighlight;
+		pThis.render = render;
+		pThis.bindEvents = bindEvents;
+		pThis.coords = coords;
+		pThis.getPiratePosition = getPiratePosition;
+		pThis.getOffset = getOffset;
+		pThis.getId = getId;
+		pThis.getMovingCapabilities = getMovingCapabilities;
+		pThis.toggleHighlight = toggleHighlight;
 
-        pThis.Click = new window.Jackal.Event(pThis);
+		pThis.Click = new window.Jackal.Event(pThis);
 
-        function render() {
-            return view.render();
-        }
+		function render() {
+			return view.render();
+		}
 
-        function bindEvents() {
-            view.bindEvents();
+		function bindEvents() {
+			view.bindEvents();
 
-            view.Click.addHandler(function () {
-                pThis.Click.fireHandlers();
-            });
-        }
+			view.Click.addHandler(function () {
+				pThis.Click.fireHandlers();
+			});
+		}
 
-        function coords() {
-            return modelMeta.coords;
-        }
+		function coords() {
+			return modelMeta.coords;
+		}
 
-        function getId() {
-            return modelMeta.id;
-        }
+		function getId() {
+			return modelMeta.id;
+		}
 
-        /*
-        returns {
-            coords: [px, px],
-            size: [px, px]
-        }
-        or undefined if pirate is not on the field
-         */
-        function getPiratePosition(pirateId) {
-            var piratePosition = modelMeta.allocator.getPirateLocation(pirateId);
+		/*
+		 returns {
+		 coords: [px, px],
+		 size: [px, px]
+		 }
+		 or undefined if pirate is not on the field
+		 */
+		function getPiratePosition(pirateId) {
+			var piratePosition = modelMeta.allocator.getPirateLocation(pirateId);
 
-            if (piratePosition.cellId != modelMeta.id) {
-                throw new Error('Pirate is not on the cell, pirateId: ' + pirateId);
-            }
+			if (piratePosition.cellId != modelMeta.id) {
+				throw new Error('Pirate is not on the cell, pirateId: ' + pirateId);
+			}
 
-            var neighbourPirateIds = modelMeta.allocator
-                .getCellPirateIds(modelMeta.id, piratePosition.step)
-                .filter(function (pid) { return pid != pirateId; });
+			var neighbourPirateIds = modelMeta.allocator
+				.getCellPirateIds(modelMeta.id, piratePosition.step)
+				.filter(function (pid) {
+					return pid != pirateId;
+				});
 
-            return view.getPiratePosition(
-                pirateId,
-                neighbourPirateIds);
-        }
+			return view.getPiratePosition(
+				pirateId,
+				neighbourPirateIds);
+		}
 
-        function getOffset() {
-            return view.getOffset();
-        }
+		function getOffset() {
+			return view.getOffset();
+		}
 
-        function toggleHighlight(highlighted) {
-            view.toggleHighlight(highlighted);
-        }
+		function toggleHighlight(highlighted) {
+			view.toggleHighlight(highlighted);
+		}
 
-        /*
-        returns
-        {
-            type: 0,
-            direction: 0,
-            haveToMakeAnotherStep: 0
-        }
-         */
-        function getMovingCapabilities(pirateId) {
-            return {
-                type: window.Jackal.movingCapabilites.neighbor
-            }
-        }
+		/*
+		 returns
+		 {
+		 type: 0,
+		 direction: 0,
+		 haveToMakeAnotherStep: 0
+		 }
+		 */
+		function getMovingCapabilities(pirateId) {
+			return {
+				type: window.Jackal.movingCapabilites.neighbor
+			}
+		}
 
-        function init() {
-            view = new window.Jackal.CellView({ id: modelMeta.id });
-        }
+		function init() {
+			view = new window.Jackal.CellView({ id: modelMeta.id });
+		}
 
-        init();
-    };
+		init();
+	};
 
 })();

@@ -1,142 +1,140 @@
 (function () {
 
-    if (!window.Jackal) {
-        window.Jackal = {};
-    }
+	if (!window.Jackal) {
+		window.Jackal = {};
+	}
 
-    window.Jackal.Game = function() {
-        var pThis = this,
-            model = {};
+	window.Jackal.Game = function () {
+		var pThis = this,
+			model = {};
 
-        pThis.init = init;
-        pThis.render = render;
-        pThis.bindEvents = bindEvents;
+		pThis.init = init;
+		pThis.render = render;
+		pThis.bindEvents = bindEvents;
 
-        /*
-        Accepts model: {
-            players: [{
-                id: 0,
-                name: ''
-            }, ...],
-            cells: [{
-                id: 0,
-                type: 0,
-                coords: []
-            }, ...],
-            pirates: [{
-                id: 0,
-                playerId: 0,
-                cellId: 0,
-                step: 0
-            }, ...]
-        }
-         */
-        function init(modelMeta)
-        {
-            model.players = modelMeta.players.map(function (playerMeta) {
-                return new window.Jackal.Player(playerMeta);
-            });
+		/*
+		 Accepts model: {
+		 players: [{
+		 id: 0,
+		 name: ''
+		 }, ...],
+		 cells: [{
+		 id: 0,
+		 type: 0,
+		 coords: []
+		 }, ...],
+		 pirates: [{
+		 id: 0,
+		 playerId: 0,
+		 cellId: 0,
+		 step: 0
+		 }, ...]
+		 }
+		 */
+		function init(modelMeta) {
+			model.players = modelMeta.players.map(function (playerMeta) {
+				return new window.Jackal.Player(playerMeta);
+			});
 
-            model.field = new window.Jackal.Field({
-                cells: modelMeta.cells,
-                pirates: modelMeta.pirates,
-                fieldSize: modelMeta.fieldSize,
-                allocator: getAllocator(modelMeta.pirates)
-            });
+			model.field = new window.Jackal.Field({
+				cells: modelMeta.cells,
+				pirates: modelMeta.pirates,
+				fieldSize: modelMeta.fieldSize,
+				allocator: getAllocator(modelMeta.pirates)
+			});
 
-            model.pirates = modelMeta.pirates.map(function (pirateMeta) {
-                return new window.Jackal.Pirate(pirateMeta);
-            });
-        }
+			model.pirates = modelMeta.pirates.map(function (pirateMeta) {
+				return new window.Jackal.Pirate(pirateMeta);
+			});
+		}
 
-        function render($container) {
-            $container.html(model.field.render());
+		function render($container) {
+			$container.html(model.field.render());
 
-            model.pirates.forEach(function (pirate) {
-                var $pirateNode = renderPirate(pirate);
+			model.pirates.forEach(function (pirate) {
+				var $pirateNode = renderPirate(pirate);
 
-                if ($pirateNode) {
-                    $container.append($pirateNode);
-                }
-            })
-        }
+				if ($pirateNode) {
+					$container.append($pirateNode);
+				}
+			})
+		}
 
-        function renderPirate(pirate) {
-            return pirate.render(getPirateCoordsAndSize(pirate));
-        }
+		function renderPirate(pirate) {
+			return pirate.render(getPirateCoordsAndSize(pirate));
+		}
 
-        function getPirateCoordsAndSize(pirate) {
-            var pirateCell = model.field.getPirateCell(pirate.getId());
-            var relativePosition = pirateCell.getPiratePosition(pirate.getId());
+		function getPirateCoordsAndSize(pirate) {
+			var pirateCell = model.field.getPirateCell(pirate.getId());
+			var relativePosition = pirateCell.getPiratePosition(pirate.getId());
 
-            if (!relativePosition)
-            {
-                return null;
-            }
+			if (!relativePosition) {
+				return null;
+			}
 
-            var cellCoords = pirateCell.getOffset();
+			var cellCoords = pirateCell.getOffset();
 
-            return {
-                coords: [relativePosition.coords[0] + cellCoords[0], relativePosition.coords[1] + cellCoords[1]],
-                size: relativePosition.size
-            };
-        }
+			return {
+				coords: [relativePosition.coords[0] + cellCoords[0], relativePosition.coords[1] + cellCoords[1]],
+				size: relativePosition.size
+			};
+		}
 
-        function getAllocator(piratesMeta) {
-            var pirateToCell = {};
+		function getAllocator(piratesMeta) {
+			var pirateToCell = {};
 
-            for (var i = 0, len = piratesMeta.length; i < len; i++) {
-                var pirate = piratesMeta[i];
+			for (var i = 0, len = piratesMeta.length; i < len; i++) {
+				var pirate = piratesMeta[i];
 
-                pirateToCell[pirate.id] = {
-                    cellId: pirate.cellId,
-                    step: pirate.step
-                };
-            }
+				pirateToCell[pirate.id] = {
+					cellId: pirate.cellId,
+					step: pirate.step
+				};
+			}
 
-            return new window.Jackal.Allocator(pirateToCell);
-        }
+			return new window.Jackal.Allocator(pirateToCell);
+		}
 
-        function bindEvents() {
-            model.field.bindEvents();
+		function bindEvents() {
+			model.field.bindEvents();
 
-            model.field.CellClick.addHandler(onCellClick);
+			model.field.CellClick.addHandler(onCellClick);
 
-            model.pirates.forEach(function (pirate) {
-                pirate.bindEvents();
-                pirate.Click.addHandler(onPirateClick);
-            })
-        }
+			model.pirates.forEach(function (pirate) {
+				pirate.bindEvents();
+				pirate.Click.addHandler(onPirateClick);
+			})
+		}
 
-        function onPirateClick(sender, args) {
-            sender.select();
-            model.field.highlightAvailableCells(sender);
-        }
+		function onPirateClick(sender, args) {
+			sender.select();
+			model.field.highlightAvailableCells(sender);
+		}
 
-        function getSelectedPirate() {
-            var selectedPirate = model.pirates.filter(function (p) {
-                return p.getIsSelected();
-            });
+		function getSelectedPirate() {
+			var selectedPirate = model.pirates.filter(function (p) {
+				return p.getIsSelected();
+			});
 
-            return selectedPirate.length > 0 ? selectedPirate[0] : null;
-        }
+			return selectedPirate.length > 0 ? selectedPirate[0] : null;
+		}
 
-        function onCellClick(field, args) {
-            var cell = args.cell;
-            var selectedPirate = getSelectedPirate();
+		function onCellClick(field, args) {
+			var cell = args.cell;
+			var selectedPirate = getSelectedPirate();
 
-            if (!selectedPirate) {
-                return;
-            }
+			if (!selectedPirate) {
+				return;
+			}
 
-            if (model.field.canMoveTo(selectedPirate, cell)) {
-                model.field.moveTo(selectedPirate, cell);
-                selectedPirate.moveTo(getPirateCoordsAndSize(selectedPirate));
-            }
+			if (model.field.canMoveTo(selectedPirate, cell)) {
+				model.field.moveTo(selectedPirate, cell);
+				selectedPirate.moveTo(getPirateCoordsAndSize(selectedPirate));
+			}
 
-            selectedPirate.deselect();
-            model.field.removeCellsHighlight();
-        }
-    };
+			selectedPirate.deselect();
+			model.field.removeCellsHighlight();
+		}
+	};
 
 })();
