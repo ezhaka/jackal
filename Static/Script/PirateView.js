@@ -13,6 +13,7 @@
         pThis.bindEvents = bindEvents;
         pThis.select = select;
         pThis.deselect = deselect;
+        pThis.moveTo = moveTo;
         pThis.Click = new window.Jackal.Event(pThis);
 
         /*
@@ -24,15 +25,13 @@
         function render(position) {
             $node = $('<div class="pirate" />');
             $node.attr('id', model.id);
-
-            $node.css({
-                left: position.coords[0] + 'px',
-                top: position.coords[1] + 'px',
-                width: position.size[0],
-                height: position.size[1]
-            });
+            $node.css(positionToCssObject(position));
 
             return $node;
+        }
+
+        function moveTo(position) {
+            $node.animate(positionToCssObject(position));
         }
 
         function select() {
@@ -47,6 +46,15 @@
             $node.click(function () {
                 pThis.Click.fireHandlers();
             })
+        }
+
+        function positionToCssObject(position) {
+            return {
+                left: position.coords[0] + 'px',
+                top: position.coords[1] + 'px',
+                width: position.size[0],
+                height: position.size[1]
+            };
         }
     }
 

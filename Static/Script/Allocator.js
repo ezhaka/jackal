@@ -15,6 +15,7 @@
         var pThis = this;
 
         pThis.getPirateLocation = getPirateLocation;
+        pThis.setPirateLocation = setPirateLocation;
         pThis.getCellPirateIds = getCellPirateIds;
 
         /* returns { cellId: 0, step: 0 } */
@@ -36,6 +37,10 @@
             }
 
             return result;
+        }
+
+        function setPirateLocation(pirateId, cellInfo) {
+            pirateToCell[pirateId] = cellInfo;
         }
     };
 

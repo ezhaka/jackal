@@ -15,6 +15,7 @@
         pThis.select = select;
         pThis.deselect = deselect;
         pThis.getIsSelected = getIsSelected;
+        pThis.moveTo = moveTo;
 
         pThis.Click = new window.Jackal.Event(pThis);
 
@@ -26,6 +27,10 @@
          */
         function render(position) {
             return view.render(position);
+        }
+
+        function moveTo(position) {
+            view.moveTo(position);
         }
 
         function getId() {

@@ -62,6 +62,10 @@
         }
 
         function renderPirate(pirate) {
+            return pirate.render(getPirateCoordsAndSize(pirate));
+        }
+
+        function getPirateCoordsAndSize(pirate) {
             var pirateCell = model.field.getPirateCell(pirate.getId());
             var relativePosition = pirateCell.getPiratePosition(pirate.getId());
 
@@ -72,10 +76,10 @@
 
             var cellCoords = pirateCell.getOffset();
 
-            return pirate.render({
+            return {
                 coords: [relativePosition.coords[0] + cellCoords[0], relativePosition.coords[1] + cellCoords[1]],
                 size: relativePosition.size
-            });
+            };
         }
 
         function getAllocator(piratesMeta) {
@@ -125,11 +129,13 @@
                 return;
             }
 
-            if (!model.field.canMoveTo(selectedPirate, cell)) {
-                selectedPirate.deselect();
-                model.field.removeCellsHighlight();
+            if (model.field.canMoveTo(selectedPirate, cell)) {
+                model.field.moveTo(selectedPirate, cell);
+                selectedPirate.moveTo(getPirateCoordsAndSize(selectedPirate));
             }
 
+            selectedPirate.deselect();
+            model.field.removeCellsHighlight();
         }
     };
 

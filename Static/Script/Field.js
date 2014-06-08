@@ -19,6 +19,7 @@
         pThis.highlightAvailableCells = highlightAvailableCells;
         pThis.removeCellsHighlight = removeCellsHighlight;
         pThis.canMoveTo = canMoveTo;
+        pThis.moveTo = moveTo;
 
         pThis.CellClick = new window.Jackal.Event(pThis);
 
@@ -113,6 +114,14 @@
         function canMoveTo(pirate, cell) {
             var availableCells = getAvailableCells(pirate);
             return availableCells.filter(function (ac) { return ac.getId() == cell.getId(); }).length > 0;
+        }
+
+        function moveTo(pirate, cell) {
+            // todo: check can move?
+
+            modelMeta.allocator.setPirateLocation(pirate.getId(), {
+                cellId: cell.getId()
+            });
         }
 
         function removeCellsHighlight() {
