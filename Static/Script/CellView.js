@@ -6,7 +6,9 @@
 
 	window.Jackal.CellView = function (model) {
 		var pThis = this,
-			$node;
+			$container,
+			$cellBack,
+			$cellContent;
 
 		pThis.render = render;
 		pThis.bindEvents = bindEvents;
@@ -16,11 +18,19 @@
 
 		pThis.Click = new window.Jackal.Event(pThis);
 
-		function render() {
-			$node = $('<div class="cell" />');
-			$node.attr('id', model.id);
+		function render($content) {
+			$container = $('<div class="cellContainer" />');
+			$cellBack = $('<div class="cellBack" />');
+			$container.append($cellBack);
 
-			return $node;
+			if ($content)
+			{
+				$cellContent = $('<div class="cellContentWrapper" />');
+				$cellContent.append($content);
+				$container.append($cellContent);
+			}
+
+			return $container;
 		}
 
 		/*
@@ -37,25 +47,25 @@
 
 			return {
 				coords: [
-						$node.width() / 2 - defaultPirateWidth / 2,
-						$node.height() / 2 - defaultPirateHeight / 2
+						$container.width() / 2 - defaultPirateWidth / 2,
+						$container.height() / 2 - defaultPirateHeight / 2
 				],
 				size: [defaultPirateWidth, defaultPirateHeight]
 			};
 		}
 
 		function bindEvents() {
-			$node.click(function () {
+			$container.click(function () {
 				pThis.Click.fireHandlers();
 			});
 		}
 
 		function toggleHighlight(highlighted) {
-			($node[highlighted ? 'addClass' : 'removeClass'])('highlighted');
+			($cellBack[highlighted ? 'addClass' : 'removeClass'])('highlighted');
 		}
 
 		function getOffset() {
-			var offset = $node.offset();
+			var offset = $container.offset();
 			return [offset.left, offset.top];
 		}
 	}

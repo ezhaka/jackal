@@ -15,7 +15,8 @@
 
 	window.Jackal.Cell = function (modelMeta) {
 		var pThis = this,
-			view;
+			view,
+			cellContent;
 
 		pThis.render = render;
 		pThis.bindEvents = bindEvents;
@@ -29,7 +30,7 @@
 		pThis.Click = new window.Jackal.Event(pThis);
 
 		function render() {
-			return view.render();
+			return view.render(cellContent ? cellContent.render() : undefined);
 		}
 
 		function bindEvents() {
@@ -78,6 +79,11 @@
 		}
 
 		function toggleHighlight(highlighted) {
+			if (cellContent) {
+				cellContent.toggleHighlight(highlighted);
+				return;
+			}
+
 			view.toggleHighlight(highlighted);
 		}
 
@@ -90,13 +96,21 @@
 		 }
 		 */
 		function getMovingCapabilities(pirateId) {
-			return {
-				type: window.Jackal.movingCapabilites.neighbor
+			if (!cellContent) {
+				return {
+					type: window.Jackal.movingCapabilites.neighbor
+				};
 			}
+
+			return cellContent.getMovingCapabilities(pirateId);
 		}
 
 		function init() {
 			view = new window.Jackal.CellView({ id: modelMeta.id });
+
+			if (modelMeta.content) {
+				cellContent = window.Jackal.CellContentFactory.create(modelMeta.content);
+			}
 		}
 
 		init();

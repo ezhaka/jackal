@@ -14,6 +14,11 @@
     <script type="text/javascript" src="Script/PirateView.js"></script>
     <script type="text/javascript" src="Script/Player.js"></script>
     <script type="text/javascript" src="Script/Allocator.js"></script>
+    <script type="text/javascript" src="Script/Cells/CellContentFactory.js"></script>
+    <script type="text/javascript" src="Script/Cells/ArrowCellContent.js"></script>
+    <script type="text/javascript" src="Script/Cells/ArrowCellContentView.js"></script>
+    <script type="text/javascript" src="Script/Cells/EmptyCellContent.js"></script>
+    <script type="text/javascript" src="Script/Cells/EmptyCellContentView.js"></script>
 
     <link href="Style/Style.css" rel="stylesheet" type="text/css" />
 </head>
@@ -31,6 +36,10 @@
                 cells: [{
                     id: 1,
                     type: 0,
+                    content: {
+                        type: 2,
+                        direction: 3
+                    },
                     coords: [0, 0]
                 },
                 {
@@ -41,11 +50,18 @@
                 {
                     id: 3,
                     type: 0,
+                    content: {
+                      type: 2,
+                        direction: 3
+                    },
                     coords: [2, 0]
                 },
                 {
                     id: 4,
                     type: 0,
+                    content: {
+                        type: 1
+                    },
                     coords: [0, 1]
                 },
                 {
