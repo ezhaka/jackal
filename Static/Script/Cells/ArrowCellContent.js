@@ -1,36 +1,27 @@
 (function () {
 
-	if (!window.Jackal) {
-		window.Jackal = {};
-	}
+    var common = window.Jackal.Common,
+        cells = window.Jackal.Cells;
 
-	window.Jackal.ArrowCellContent = function (model) {
-		this.getMovingCapabilities = getMovingCapabilities;
-		this.render = render;
-		this.toggleHighlight = toggleHighlight;
+	window.Jackal.ArrowCellContent = ArrowCellContent;
 
+    function ArrowCellContent(model) {
 		var view;
 
-		function render() {
-			return view.render();
-		}
+        this.getView = function () {
+            view = view || new window.Jackal.ArrowCellContentView(model);
+            return view;
+        };
 
-		function getMovingCapabilities(pirateId) {
+		this.getMovingCapabilities = function (pirateId) {
 			return {
 				direction: model.direction,
 				type: window.Jackal.movingCapabilites.neighbor,
 				haveToMakeAnotherStep: true
 			};
-		}
-
-		function toggleHighlight(highlighted) {
-			view.toggleHighlight(highlighted);
-		}
-
-		function init() {
-			view = new window.Jackal.ArrowCellContentView(model);
-		}
-
-		init();
+		};
 	};
+
+    common.inherit(ArrowCellContent, cells.CellContent);
+
 })();

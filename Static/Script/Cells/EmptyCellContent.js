@@ -1,34 +1,24 @@
 (function () {
 
-	if (!window.Jackal) {
-		window.Jackal = {};
-	}
+    var common = window.Jackal.Common,
+        cells = window.Jackal.Cells;
 
-	window.Jackal.EmptyCellContent = function () {
-		this.getMovingCapabilities = getMovingCapabilities;
-		this.render = render;
-		this.toggleHighlight = toggleHighlight;
+	window.Jackal.EmptyCellContent = EmptyCellContent;
 
+    function EmptyCellContent() {
 		var view;
 
-		function render() {
-			return view.render();
-		}
-
-		function getMovingCapabilities(pirateId) {
+		this.getMovingCapabilities = function (pirateId) {
 			return {
 				type: window.Jackal.movingCapabilites.neighbor
 			}
-		}
+		};
 
-		function init() {
-			view = new window.Jackal.EmptyCellContentView();
-		}
+        this.getView = function () {
+            view = view || new window.Jackal.EmptyCellContentView();
+            return view;
+        };
+	}
 
-		function toggleHighlight(highlighted) {
-			view.toggleHighlight(highlighted);
-		}
-
-		init();
-	};
+    common.inherit(EmptyCellContent, cells.CellContent);
 })();
