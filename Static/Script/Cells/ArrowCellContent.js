@@ -20,7 +20,7 @@
 				haveToMakeAnotherStep: true
 			};
 		};
-	};
+	}
 
     common.inherit(ArrowCellContent, cells.CellContent);
 

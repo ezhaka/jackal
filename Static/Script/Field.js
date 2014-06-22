@@ -20,6 +20,7 @@
 		pThis.removeCellsHighlight = removeCellsHighlight;
 		pThis.canMoveTo = canMoveTo;
 		pThis.moveTo = moveTo;
+        pThis.getCellById = getCellById;
 
 		pThis.CellClick = new window.Jackal.Event(pThis);
 
@@ -138,7 +139,6 @@
 
 		function moveTo(pirate, cell) {
 			// todo: check can move?
-
 			modelMeta.allocator.setPirateLocation(pirate.getId(), {
 				cellId: cell.getId()
 			});
@@ -150,12 +150,17 @@
 			});
 		}
 
-		function getPirateCell(pirateId) {
+        function getCellById(cellId) {
+            return cells.filter(function (c) {
+                return c.getId() == cellId;
+            })[0];
+        }
+
+        function getPirateCell(pirateId) {
 			var cellInfo = modelMeta.allocator.getPirateLocation(pirateId);
-			return cells.filter(function (c) {
-				return c.getId() == cellInfo.cellId;
-			})[0];
-		}
+            var cellId = cellInfo.cellId;
+            return getCellById(cellId);
+        }
 
 		function init() {
 			cells = modelMeta.cells.map(function (c) {

@@ -43,6 +43,7 @@
     position: absolute;
     border-radius: 100%;
     border: 1px solid red;
+    z-index: 3;
 }
 
 .pirate.selected {

@@ -26,6 +26,8 @@
 		pThis.getId = getId;
 		pThis.getMovingCapabilities = getMovingCapabilities;
 		pThis.toggleHighlight = toggleHighlight;
+        pThis.isClosed = isClosed;
+        pThis.setContent = setContent;
 
 		pThis.Click = new window.Jackal.Event(pThis);
 
@@ -41,6 +43,10 @@
 			});
 		}
 
+        function isClosed() {
+            return !cellContent;
+        }
+
 		function coords() {
 			return modelMeta.coords;
 		}
@@ -48,6 +54,15 @@
 		function getId() {
 			return modelMeta.id;
 		}
+
+        function setContent(contentModel) {
+            if (!contentModel) {
+                throw new Error('content model is empty');
+            }
+
+            cellContent = window.Jackal.CellContentFactory.create(contentModel);
+            view.updateContent(cellContent.render());
+        }
 
 		/*
 		 returns {
@@ -79,10 +94,10 @@
 		}
 
 		function toggleHighlight(highlighted) {
-			if (cellContent) {
-				cellContent.toggleHighlight(highlighted);
-				return;
-			}
+//			if (cellContent) {
+//				cellContent.toggleHighlight(highlighted);
+//				return;
+//			}
 
 			view.toggleHighlight(highlighted);
 		}

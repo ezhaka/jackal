@@ -10,11 +10,14 @@
 			$cellBack,
 			$cellContent;
 
-		pThis.render = render;
+        var activeClassName = 'active';
+
+        pThis.render = render;
 		pThis.bindEvents = bindEvents;
 		pThis.getPiratePosition = getPiratePosition;
 		pThis.getOffset = getOffset;
 		pThis.toggleHighlight = toggleHighlight;
+		pThis.updateContent = updateContent;
 
 		pThis.Click = new window.Jackal.Event(pThis);
 
@@ -22,16 +25,27 @@
 			$container = $('<div class="cellContainer" />');
 			$cellBack = $('<div class="cellBack" />');
 			$container.append($cellBack);
+            $cellContent = $('<div class="cellContentWrapper" />');
+            $container.append($cellContent);
 
-			if ($content)
+            if ($content)
 			{
-				$cellContent = $('<div class="cellContentWrapper" />');
 				$cellContent.append($content);
-				$container.append($cellContent);
+                $cellContent.addClass(activeClassName);
 			}
+            else
+            {
+                $cellBack.addClass(activeClassName);
+            }
 
 			return $container;
 		}
+
+        function updateContent($content) {
+            $cellContent.append($content);
+            $cellContent.addClass(activeClassName);
+            $cellBack.removeClass(activeClassName);
+        }
 
 		/*
 		 returns {
@@ -61,8 +75,11 @@
 		}
 
 		function toggleHighlight(highlighted) {
-			($cellBack[highlighted ? 'addClass' : 'removeClass'])('highlighted');
-		}
+            // todo: rewrite it
+			function toggleHighlight(c) { (c[highlighted ? 'addClass' : 'removeClass'])('highlighted') };
+            toggleHighlight($cellBack);
+            toggleHighlight($cellContent);
+        }
 
 		function getOffset() {
 			var offset = $container.offset();

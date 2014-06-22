@@ -6,47 +6,14 @@
 
 	window.Jackal.Game = function () {
 		var pThis = this,
-			model = {};
+			model = {},
+            stepManager;
 
 		pThis.init = init;
 		pThis.render = render;
 		pThis.bindEvents = bindEvents;
 
-		/*
-		 Accepts model: {
-		 players: [{
-		 id: 0,
-		 name: ''
-		 }, ...],
-		 cells: [{
-		 id: 0,
-		 type: 0,
-		 coords: []
-		 }, ...],
-		 pirates: [{
-		 id: 0,
-		 playerId: 0,
-		 cellId: 0,
-		 step: 0
-		 }, ...]
-		 }
-		 */
-		function init(modelMeta) {
-			model.players = modelMeta.players.map(function (playerMeta) {
-				return new window.Jackal.Player(playerMeta);
-			});
 
-			model.field = new window.Jackal.Field({
-				cells: modelMeta.cells,
-				pirates: modelMeta.pirates,
-				fieldSize: modelMeta.fieldSize,
-				allocator: getAllocator(modelMeta.pirates)
-			});
-
-			model.pirates = modelMeta.pirates.map(function (pirateMeta) {
-				return new window.Jackal.Pirate(pirateMeta);
-			});
-		}
 
 		function render($container) {
 			$container.html(model.field.render());
@@ -128,13 +95,77 @@
 			}
 
 			if (model.field.canMoveTo(selectedPirate, cell)) {
-				model.field.moveTo(selectedPirate, cell);
-				selectedPirate.moveTo(getPirateCoordsAndSize(selectedPirate));
+                stepManager.move(selectedPirate.getId(), cell.getId());
 			}
+            else {
+                selectedPirate.deselect();
+            }
 
-			selectedPirate.deselect();
 			model.field.removeCellsHighlight();
 		}
+
+        function onMoveComplete(sender, args) {
+            var cell = model.field.getCellById(args.cellId);
+            var pirate = getPirateById(args.pirateId);
+            pirate.moveTo(getPirateCoordsAndSize(pirate));
+
+            if (cell.isClosed()) {
+                cell.setContent(args.cellContent);
+            }
+
+            model.field.moveTo(pirate, cell);
+            pirate.moveTo(getPirateCoordsAndSize(pirate));
+
+            if (pirate.getIsSelected()) {
+                pirate.deselect();
+            }
+        }
+
+        function getPirateById(id) {
+            return model.pirates.filter(function (p) {
+                return p.getId() == id;
+            })[0];
+        }
+
+
+        /*
+         Accepts model: {
+         players: [{
+         id: 0,
+         name: ''
+         }, ...],
+         cells: [{
+         id: 0,
+         type: 0,
+         coords: []
+         }, ...],
+         pirates: [{
+         id: 0,
+         playerId: 0,
+         cellId: 0,
+         step: 0
+         }, ...]
+         }
+         */
+        function init(modelMeta) {
+            model.players = modelMeta.players.map(function (playerMeta) {
+                return new window.Jackal.Player(playerMeta);
+            });
+
+            model.field = new window.Jackal.Field({
+                cells: modelMeta.cells,
+                pirates: modelMeta.pirates,
+                fieldSize: modelMeta.fieldSize,
+                allocator: getAllocator(modelMeta.pirates)
+            });
+
+            model.pirates = modelMeta.pirates.map(function (pirateMeta) {
+                return new window.Jackal.Pirate(pirateMeta);
+            });
+
+            stepManager = new Jackal.StepManager();
+            stepManager.MoveComplete.addHandler(onMoveComplete);
+        }
 	};
 
 })();
