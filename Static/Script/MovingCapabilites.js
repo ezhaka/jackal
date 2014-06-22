@@ -14,6 +14,10 @@
 		topLeft: 128
 	};
 
+    window.Jackal.hasDirection = function (direction, concreteDirection) {
+        return (direction & concreteDirection) > 0;
+    };
+
 	window.Jackal.movingCapabilites = {
 		nowhere: 1,
 		neighbor: 2,

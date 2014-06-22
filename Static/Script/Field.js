@@ -86,16 +86,33 @@
 			var availableCells = [];
 
 			if (movingCapabilities.type == window.Jackal.movingCapabilites.neighbor) {
-				availableCells = getCellsByCoords([
-					[currentCoords[0], currentCoords[1] - 1],
-					[currentCoords[0], currentCoords[1] + 1],
-					[currentCoords[0] - 1, currentCoords[1]],
-					[currentCoords[0] - 1, currentCoords[1] - 1],
-					[currentCoords[0] - 1, currentCoords[1] + 1],
-					[currentCoords[0] + 1, currentCoords[1]],
-					[currentCoords[0] + 1, currentCoords[1] - 1],
-					[currentCoords[0] + 1, currentCoords[1] + 1]
-				]);
+
+                var availableCoords = [];
+
+                var hasDirection = window.Jackal.hasDirection;
+                var directionEnum = window.Jackal.direction;
+
+                var directionMapping = {};
+                directionMapping[directionEnum.top] = [0, 1];
+                directionMapping[directionEnum.topRight] = [1, 1];
+                directionMapping[directionEnum.right] = [1, 0];
+                directionMapping[directionEnum.bottomRight] = [1, -1];
+                directionMapping[directionEnum.bottom] = [0, -1];
+                directionMapping[directionEnum.bottomLeft] = [-1, -1];
+                directionMapping[directionEnum.left] = [-1, 0];
+                directionMapping[directionEnum.topLeft] = [-1, 1];
+
+                for (var m in directionMapping) {
+                    if (directionMapping.hasOwnProperty(m)) {
+                        var offset = directionMapping[m];
+
+                        if (!movingCapabilities.direction || hasDirection(movingCapabilities.direction, m)) {
+                            availableCoords.push([currentCoords[0] - offset[0], currentCoords[1] - offset[1]]);
+                        }
+                    }
+                }
+
+				availableCells = getCellsByCoords(availableCoords);
 			}
 
 			// filter with another pirates...
