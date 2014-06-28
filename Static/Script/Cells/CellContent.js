@@ -1,10 +1,8 @@
-(function () {
-    window.Jackal.namespace('Cells').CellContent = CellContent;
-    window.Jackal.namespace('Cells').CellContentView = CellContentView;
+(function (JK) {
+    JK.namespace('Cells').CellContent = CellContent;
+    JK.namespace('Cells').CellContentView = CellContentView;
 
-    function CellContent() {
-
-    }
+    function CellContent() {}
 
     CellContent.prototype = {
         getView: function () {
@@ -18,9 +16,7 @@
         }
     };
 
-    function CellContentView() {
-
-    }
+    function CellContentView() {}
 
     CellContentView.prototype = {
         toggleHighlight: function (highlighted) {
@@ -31,4 +27,4 @@
             return $('<div class="cellContent" />');
         }
     };
-})();
+})(window.JK);

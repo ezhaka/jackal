@@ -1,8 +1,4 @@
-(function () {
-
-	if (!window.Jackal) {
-		window.Jackal = {};
-	}
+(function (JK) {
 
 	/*
 	 accepts
@@ -11,7 +7,7 @@
 	 }
 	 */
 
-	window.Jackal.Allocator = function (pirateToCell) {
+	JK.Allocator = function (pirateToCell) {
 		var pThis = this;
 
 		pThis.getPirateLocation = getPirateLocation;
@@ -27,9 +23,9 @@
 		function getCellPirateIds(cellId, step) {
 			var result = [];
 
-			/* todo: refactor, bad practice */
 			for (var pirateId in pirateToCell) {
-				if (pirateToCell[pirateId]
+				if (pirateToCell.hasOwnProperty(pirateId)
+                    && pirateToCell[pirateId]
 					&& pirateToCell[pirateId].cellId == cellId
 					&& (!step || pirateToCell[pirateId].step == step)) {
 					result.push(pirateId);
@@ -44,4 +40,4 @@
 		}
 	};
 
-})();
+})(window.JK);

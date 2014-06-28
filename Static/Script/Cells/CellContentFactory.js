@@ -1,28 +1,24 @@
-(function () {
+(function (JK) {
 
-	if (!window.Jackal) {
-		window.Jackal = {};
-	}
-
-	window.Jackal.cellContentType = {
+	JK.cellContentType = {
 		empty: 1,
 		arrow: 2
 	};
 
-	window.Jackal.CellContentFactory = {};
-	var factory = window.Jackal.CellContentFactory;
+	JK.CellContentFactory = {};
+	var factory = JK.CellContentFactory;
 
 	factory.create = function (model) {
 		switch (model.type) {
-			case window.Jackal.cellContentType.empty:
-				return new window.Jackal.EmptyCellContent(model);
+			case JK.cellContentType.empty:
+				return new JK.EmptyCellContent(model);
 
-			case window.Jackal.cellContentType.arrow:
-				return new window.Jackal.ArrowCellContent(model);
+			case JK.cellContentType.arrow:
+				return new JK.ArrowCellContent(model);
 
 			default:
 				throw new Error('Unknown cell content type ' + model.type);
 		}
 	}
 
-})();
+})(window.JK);

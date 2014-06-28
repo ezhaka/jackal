@@ -1,10 +1,6 @@
-(function () {
+(function (JK) {
 
-	if (!window.Jackal) {
-		window.Jackal = {};
-	}
-
-	window.Jackal.Pirate = function (modelMeta) {
+	JK.Pirate = function (modelMeta) {
 		var pThis = this,
 			view,
 			isSelected;
@@ -17,7 +13,7 @@
 		pThis.getIsSelected = getIsSelected;
 		pThis.moveTo = moveTo;
 
-		pThis.Click = new window.Jackal.Event(pThis);
+		pThis.Click = new JK.Event(pThis);
 
 		/*
 		 position = {
@@ -42,7 +38,7 @@
 		}
 
 		function init() {
-			view = new window.Jackal.PirateView({ id: modelMeta.id });
+			view = new JK.PirateView({ id: modelMeta.id });
 
 			view.Click.addHandler(function (args) {
 				pThis.Click.fireHandlers(args);
@@ -66,4 +62,4 @@
 		init();
 	};
 
-})();
+})(window.JK);

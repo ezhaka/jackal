@@ -1,9 +1,6 @@
-(function () {
-	if (!window.Jackal) {
-		window.Jackal = {};
-	}
+(function (JK) {
 
-	window.Jackal.direction = {
+	JK.direction = {
 		top: 1,
 		topRight: 2,
 		right: 4,
@@ -14,11 +11,11 @@
 		topLeft: 128
 	};
 
-    window.Jackal.hasDirection = function (direction, concreteDirection) {
+    JK.hasDirection = function (direction, concreteDirection) {
         return (direction & concreteDirection) > 0;
     };
 
-	window.Jackal.movingCapabilites = {
+	JK.movingCapabilites = {
 		nowhere: 1,
 		neighbor: 2,
 		anywhere: 4,
@@ -27,4 +24,4 @@
 		back: 32,
 		forward: 64
 	};
-})();
+})(window.JK);

@@ -1,5 +1,5 @@
-(function () {
-    var common = window.Jackal.namespace('Common');
+(function (JK) {
+    var common = JK.namespace('Common');
 
     common.inherit = function (C, P) {
         var F = function () {};
@@ -7,4 +7,4 @@
         C.prototype = new F();
         C.uber = P.prototype;
     };
-})();
+})(window.JK);

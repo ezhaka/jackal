@@ -1,19 +1,15 @@
-(function () {
-
-	if (!window.Jackal) {
-		window.Jackal = {};
-	}
+(function (JK) {
 
 	/*
 	 Accepts model:
 	 {
 	 id: 0,
 	 type: 0,
-	 allocator: window.Jackal.Allocator
+	 allocator: JK.Allocator
 	 }
 	 */
 
-	window.Jackal.Cell = function (modelMeta) {
+	JK.Cell = function (modelMeta) {
 		var pThis = this,
 			view,
 			cellContent;
@@ -29,7 +25,7 @@
         pThis.isClosed = isClosed;
         pThis.setContent = setContent;
 
-		pThis.Click = new window.Jackal.Event(pThis);
+		pThis.Click = new JK.Event(pThis);
 
 		function render() {
 			return view.render(cellContent ? cellContent.render() : undefined);
@@ -38,7 +34,7 @@
 		function bindEvents() {
 			view.bindEvents();
 
-			view.Click.addHandler(function () {
+			view.Click.addHandler(function (JK) {
 				pThis.Click.fireHandlers();
 			});
 		}
@@ -60,7 +56,7 @@
                 throw new Error('content model is empty');
             }
 
-            cellContent = window.Jackal.CellContentFactory.create(contentModel);
+            cellContent = JK.CellContentFactory.create(contentModel);
             view.updateContent(cellContent.render());
         }
 
@@ -113,7 +109,7 @@
 		function getMovingCapabilities(pirateId) {
 			if (!cellContent) {
 				return {
-					type: window.Jackal.movingCapabilites.neighbor
+					type: JK.movingCapabilites.neighbor
 				};
 			}
 
@@ -121,14 +117,14 @@
 		}
 
 		function init() {
-			view = new window.Jackal.CellView({ id: modelMeta.id });
+			view = new JK.CellView({ id: modelMeta.id });
 
 			if (modelMeta.content) {
-				cellContent = window.Jackal.CellContentFactory.create(modelMeta.content);
+				cellContent = JK.CellContentFactory.create(modelMeta.content);
 			}
 		}
 
 		init();
 	};
 
-})();
+})(window.JK);

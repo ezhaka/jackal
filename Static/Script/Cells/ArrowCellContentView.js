@@ -1,19 +1,19 @@
-(function () {
+(function (JK) {
 
-    var common = window.Jackal.Common,
-        cells = window.Jackal.Cells;
+    var common = JK.Common,
+        cells = JK.Cells;
 
-	window.Jackal.ArrowCellContentView = function (model) {
+	JK.ArrowCellContentView = function (model) {
 		var pThis = this,
             $node;
 
 		pThis.render = function () {
-            $node = $node || window.Jackal.ArrowCellContentView.uber.getNode();
+            $node = $node || JK.ArrowCellContentView.uber.getNode();
             $node.addClass('arrowCellContent');
             $node.text(model.direction);
             return $node;
         };
 	};
 
-    common.inherit(window.Jackal.ArrowCellContentView, cells.CellContentView);
-})();
+    common.inherit(JK.ArrowCellContentView, cells.CellContentView);
+})(window.JK);

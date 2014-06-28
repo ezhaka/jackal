@@ -1,10 +1,6 @@
-(function () {
+(function (JK) {
 
-	if (!window.Jackal) {
-		window.Jackal = {};
-	}
-
-	window.Jackal.Event = function (parent) {
+	JK.Event = function (parent) {
 		var pThis = this,
 			handlers = [];
 
@@ -22,4 +18,4 @@
 		}
 	};
 
-})();
+})(window.JK);

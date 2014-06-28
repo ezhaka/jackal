@@ -1,12 +1,14 @@
-(function (global) {
-    global.Jackal = global.Jackal || {};
+(function (JK, global) {
 
-    global.Jackal.namespace = function (path) {
+    global.JK = global.JK || {};
+    JK = global.JK;
+
+    JK.namespace = function (path) {
         var parts = path.split('.'),
-            parent = global.Jackal,
+            parent = JK,
             i;
 
-        if (parts[0] == 'Jackal') {
+        if (parts[0] == 'JK') {
             parts = parts.slice(1);
         }
 
@@ -20,4 +22,4 @@
 
         return parent;
     }
-})(window);
+})(window.JK, window);

@@ -1,10 +1,6 @@
-(function () {
+(function (JK) {
 
-	if (!window.Jackal) {
-		window.Jackal = {};
-	}
-
-	window.Jackal.PirateView = function (model) {
+	JK.PirateView = function (model) {
 		var pThis = this,
 			$node,
 			selectedClass = 'selected';
@@ -14,7 +10,7 @@
 		pThis.select = select;
 		pThis.deselect = deselect;
 		pThis.moveTo = moveTo;
-		pThis.Click = new window.Jackal.Event(pThis);
+		pThis.Click = new JK.Event(pThis);
 
 		/*
 		 position = {
@@ -43,7 +39,7 @@
 		}
 
 		function bindEvents() {
-			$node.click(function () {
+			$node.click(function (JK) {
 				pThis.Click.fireHandlers();
 			})
 		}
@@ -58,4 +54,4 @@
 		}
 	}
 
-})();
+})(window.JK);

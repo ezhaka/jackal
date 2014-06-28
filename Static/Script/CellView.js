@@ -1,10 +1,6 @@
-(function () {
+(function (JK) {
 
-	if (!window.Jackal) {
-		window.Jackal = {};
-	}
-
-	window.Jackal.CellView = function (model) {
+	JK.CellView = function (model) {
 		var pThis = this,
 			$container,
 			$cellBack,
@@ -19,7 +15,7 @@
 		pThis.toggleHighlight = toggleHighlight;
 		pThis.updateContent = updateContent;
 
-		pThis.Click = new window.Jackal.Event(pThis);
+		pThis.Click = new JK.Event(pThis);
 
 		function render($content) {
 			$container = $('<div class="cellContainer" />');
@@ -69,7 +65,7 @@
 		}
 
 		function bindEvents() {
-			$container.click(function () {
+			$container.click(function (JK) {
 				pThis.Click.fireHandlers();
 			});
 		}
@@ -87,4 +83,4 @@
 		}
 	}
 
-})();
+})(window.JK);

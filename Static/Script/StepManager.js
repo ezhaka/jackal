@@ -3,10 +3,10 @@
 
     function StepManager() {
         var pThis = this;
-        pThis.MoveComplete = new window.Jackal.Event(this);
+        pThis.MoveComplete = new JK.Event(this);
 
         pThis.move = function(pirateId, cellId) {
-            setTimeout(function () {
+            setTimeout(function (JK) {
                 pThis.MoveComplete.fireHandlers({
                     pirateId: pirateId,
                     cellId: cellId,
@@ -14,7 +14,7 @@
                         type: 1
                     }
                 })
-            }, 500);
+            }, 100);
         };
     }
-})(window, window.Jackal);
+})(window, JK);

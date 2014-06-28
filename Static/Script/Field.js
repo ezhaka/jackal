@@ -1,15 +1,11 @@
-(function () {
-
-	if (!window.Jackal) {
-		window.Jackal = {};
-	}
+(function (JK) {
 
 	/*
 	 Accepts model:
 	 ...
 	 */
 
-	window.Jackal.Field = function (modelMeta) {
+	JK.Field = function (modelMeta) {
 		var pThis = this,
 			cells;
 
@@ -22,7 +18,7 @@
 		pThis.moveTo = moveTo;
         pThis.getCellById = getCellById;
 
-		pThis.CellClick = new window.Jackal.Event(pThis);
+		pThis.CellClick = new JK.Event(pThis);
 
 		// todo: extract to view
 		function render() {
@@ -86,12 +82,12 @@
 
 			var availableCells = [];
 
-			if (movingCapabilities.type == window.Jackal.movingCapabilites.neighbor) {
+			if (movingCapabilities.type == JK.movingCapabilites.neighbor) {
 
                 var availableCoords = [];
 
-                var hasDirection = window.Jackal.hasDirection;
-                var directionEnum = window.Jackal.direction;
+                var hasDirection = JK.hasDirection;
+                var directionEnum = JK.direction;
 
                 var directionMapping = {};
                 directionMapping[directionEnum.top] = [0, 1];
@@ -164,11 +160,11 @@
 
 		function init() {
 			cells = modelMeta.cells.map(function (c) {
-				return new window.Jackal.Cell($.extend(c, { allocator: modelMeta.allocator }));
+				return new JK.Cell($.extend(c, { allocator: modelMeta.allocator }));
 			});
 		}
 
 		init();
 	};
 
-})();
+})(window.JK);

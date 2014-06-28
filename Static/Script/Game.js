@@ -1,10 +1,6 @@
-(function () {
+(function (JK) {
 
-	if (!window.Jackal) {
-		window.Jackal = {};
-	}
-
-	window.Jackal.Game = function () {
+	JK.Game = function () {
 		var pThis = this,
 			model = {},
             stepManager;
@@ -59,7 +55,7 @@
 				};
 			}
 
-			return new window.Jackal.Allocator(pirateToCell);
+			return new JK.Allocator(pirateToCell);
 		}
 
 		function bindEvents() {
@@ -149,10 +145,10 @@
          */
         function init(modelMeta) {
             model.players = modelMeta.players.map(function (playerMeta) {
-                return new window.Jackal.Player(playerMeta);
+                return new JK.Player(playerMeta);
             });
 
-            model.field = new window.Jackal.Field({
+            model.field = new JK.Field({
                 cells: modelMeta.cells,
                 pirates: modelMeta.pirates,
                 fieldSize: modelMeta.fieldSize,
@@ -160,12 +156,12 @@
             });
 
             model.pirates = modelMeta.pirates.map(function (pirateMeta) {
-                return new window.Jackal.Pirate(pirateMeta);
+                return new JK.Pirate(pirateMeta);
             });
 
-            stepManager = new Jackal.StepManager();
+            stepManager = new JK.StepManager();
             stepManager.MoveComplete.addHandler(onMoveComplete);
         }
 	};
 
-})();
+})(window.JK);

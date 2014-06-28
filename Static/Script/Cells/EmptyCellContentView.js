@@ -1,9 +1,9 @@
-(function () {
+(function (JK) {
 
-    var common = window.Jackal.Common,
-        cells = window.Jackal.Cells;
+    var common = JK.Common,
+        cells = JK.Cells;
 
-	window.Jackal.EmptyCellContentView = EmptyCellContentView;
+	JK.EmptyCellContentView = EmptyCellContentView;
 
     function EmptyCellContentView(model) {
 		var pThis = this,
@@ -18,4 +18,4 @@
 
     common.inherit(EmptyCellContentView, cells.CellContentView);
 
-})();
+})(window.JK);
