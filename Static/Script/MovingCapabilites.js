@@ -22,6 +22,8 @@
 		untilWater: 8,
 		ship: 16,
 		back: 32,
-		forward: 64
+		forward: 64,
+        horse: 128,
+        water: 256
 	};
 })(window.JK);

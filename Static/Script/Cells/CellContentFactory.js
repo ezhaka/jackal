@@ -2,7 +2,9 @@
 
 	JK.cellContentType = {
 		empty: 1,
-		arrow: 2
+		arrow: 2,
+        horse: 3,
+        water: 4
 	};
 
 	JK.CellContentFactory = {};
@@ -15,6 +17,12 @@
 
 			case JK.cellContentType.arrow:
 				return new JK.ArrowCellContent(model);
+
+            case JK.cellContentType.horse:
+                return new JK.HorseCellContent(model);
+
+            case JK.cellContentType.water:
+                return new JK.WaterCellContent(model);
 
 			default:
 				throw new Error('Unknown cell content type ' + model.type);

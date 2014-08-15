@@ -9,8 +9,6 @@
 		pThis.render = render;
 		pThis.bindEvents = bindEvents;
 
-
-
 		function render($container) {
 			$container.html(model.field.render());
 
@@ -112,6 +110,12 @@
             model.field.moveTo(pirate, cell);
             pirate.moveTo(getPirateCoordsAndSize(pirate));
 
+            var movingCapabilities = cell.getMovingCapabilities();
+            var availableCells = model.field.getAvailableCells(pirate);
+            if (movingCapabilities.haveToMakeAnotherStep && availableCells.length == 1) {
+                stepManager.move(args.pirateId, availableCells[0].getId());
+            }
+
             if (pirate.getIsSelected()) {
                 pirate.deselect();
             }
@@ -156,6 +160,8 @@
             });
 
             model.pirates = modelMeta.pirates.map(function (pirateMeta) {
+
+
                 return new JK.Pirate(pirateMeta);
             });
 

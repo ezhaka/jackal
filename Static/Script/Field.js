@@ -17,6 +17,7 @@
 		pThis.canMoveTo = canMoveTo;
 		pThis.moveTo = moveTo;
         pThis.getCellById = getCellById;
+        pThis.getAvailableCells = getAvailableCells;
 
 		pThis.CellClick = new JK.Event(pThis);
 
@@ -73,7 +74,11 @@
 			})
 		}
 
-		function getAvailableCells(pirate) {
+        function getAbsoluteCoords(currentCoords, offset) {
+            return [currentCoords[0] - offset[0], currentCoords[1] - offset[1]];
+        }
+
+        function getAvailableCells(pirate) {
 			var pirateId = pirate.getId();
 			var pirateCell = getPirateCell(pirateId);
 			var currentCoords = pirateCell.coords();
@@ -104,13 +109,25 @@
                         var offset = directionMapping[m];
 
                         if (!movingCapabilities.direction || hasDirection(movingCapabilities.direction, m)) {
-                            availableCoords.push([currentCoords[0] - offset[0], currentCoords[1] - offset[1]]);
+                            availableCoords.push(getAbsoluteCoords(currentCoords, offset));
                         }
                     }
                 }
 
 				availableCells = getCellsByCoords(availableCoords);
 			}
+
+            if (movingCapabilities.type == JK.movingCapabilites.horse) {
+                var offsets = [
+                    [2, 1], [1, 2], [-2, 1], [-1, 2], [-2, -1], [-1, -2], [2, -1], [1, -2]
+                ];
+
+                var availableCoords = offsets.map(function (offset) {
+                    return getAbsoluteCoords(currentCoords, offset);
+                });
+
+                availableCells = getCellsByCoords(availableCoords);
+            }
 
 			// filter with another pirates...
 			// filter with water

@@ -29,6 +29,15 @@
     background: #ffc5d8;
 }
 
+.cellContainer .cellContentWrapper .cellContent.horseCellContent {
+    background: #b4a6ff;
+}
+
+.cellContainer .cellContentWrapper .cellContent.horseCellContent {
+    background: #fff;
+    border-color: #39d6ff;
+}
+
 .cellContainer .cellBack.active,
 .cellContainer .cellContentWrapper.active {
     z-index: 2;
