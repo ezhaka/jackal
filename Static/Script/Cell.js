@@ -24,6 +24,7 @@
 		pThis.toggleHighlight = toggleHighlight;
         pThis.isClosed = isClosed;
         pThis.setContent = setContent;
+        pThis.getContent = getContent;
 
 		pThis.Click = new JK.Event(pThis);
 
@@ -58,6 +59,10 @@
 
             cellContent = JK.CellContentFactory.create(contentModel);
             view.updateContent(cellContent.render());
+        }
+
+        function getContent() {
+            return cellContent;
         }
 
 		/*

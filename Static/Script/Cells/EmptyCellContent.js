@@ -5,8 +5,10 @@
 
 	JK.EmptyCellContent = EmptyCellContent;
 
-    function EmptyCellContent() {
+    function EmptyCellContent(model) {
 		var view;
+
+        this.getContentType = function () { return model.type; };
 
 		this.getMovingCapabilities = function (pirateId) {
 			return {

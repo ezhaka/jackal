@@ -8,6 +8,8 @@
     function HorseCellContent(model) {
         var view;
 
+        this.getContentType = function () { return model.type; };
+
         this.getView = function () {
             view = view || new JK.HorseCellContentView(model);
             return view;

@@ -87,7 +87,8 @@
 
 			var availableCells = [];
 
-			if (movingCapabilities.type == JK.movingCapabilites.neighbor) {
+			if (movingCapabilities.type == JK.movingCapabilites.neighbor
+                || movingCapabilities.type == JK.movingCapabilites.water) {
 
                 var availableCoords = [];
 
@@ -129,8 +130,19 @@
                 availableCells = getCellsByCoords(availableCoords);
             }
 
+
 			// filter with another pirates...
+
 			// filter with water
+            if (pirateCell.getContent().getContentType() == JK.cellContentType.water) {
+                availableCells = availableCells.filter(function (c) {
+                    return c.getContent() ? c.getContent().getContentType() == JK.cellContentType.water : false;
+                });
+            } else {
+                availableCells = availableCells.filter(function (c) {
+                    return c.getContent() ? c.getContent().getContentType() != JK.cellContentType.water : true;
+                });
+            }
 
 			return availableCells;
 		}
