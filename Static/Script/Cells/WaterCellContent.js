@@ -1,27 +1,24 @@
-(function (JK) {
-
-    var common = JK.Common,
-        cells = JK.Cells;
-
-    JK.WaterCellContent = WaterCellContent;
-
+define(['cells/WaterCellContentView', 'MovingCapabilites', 'Inheritance', 'cells/CellContent'],
+  function (WaterCellContentView, MovingCapabilites, Inheritance, CellContent) {
     function WaterCellContent(model) {
-        var view;
+      var view;
 
-        this.getContentType = function () { return model.type; };
+      this.getContentType = function () {
+        return model.type;
+      };
 
-        this.getView = function () {
-            view = view || new JK.WaterCellContentView(model);
-            return view;
+      this.getView = function () {
+        view = view || new WaterCellContentView(model);
+        return view;
+      };
+
+      this.getMovingCapabilities = function (pirateId) {
+        return {
+          type: MovingCapabilites.water
         };
-
-        this.getMovingCapabilities = function (pirateId) {
-            return {
-                type: JK.movingCapabilites.water
-            };
-        };
+      };
     }
 
-    common.inherit(WaterCellContent, cells.CellContent);
-
-})(window.JK);
+    Inheritance.inherit(WaterCellContent, CellContent);
+    return WaterCellContent;
+  });

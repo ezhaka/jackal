@@ -1,27 +1,24 @@
-(function (JK) {
-
-    var common = JK.Common,
-        cells = JK.Cells;
-
-    JK.HorseCellContent = HorseCellContent;
-
+define(['Inheritance', 'MovingCapabilites', 'cells/HorseCellContentView', 'cells/CellContent'],
+  function (Inheritance, MovingCapabilites, HorseCellContentView, CellContent) {
     function HorseCellContent(model) {
-        var view;
+      var view;
 
-        this.getContentType = function () { return model.type; };
+      this.getContentType = function () {
+        return model.type;
+      };
 
-        this.getView = function () {
-            view = view || new JK.HorseCellContentView(model);
-            return view;
+      this.getView = function () {
+        view = view || new HorseCellContentView(model);
+        return view;
+      };
+
+      this.getMovingCapabilities = function (pirateId) {
+        return {
+          type: MovingCapabilites.horse
         };
-
-        this.getMovingCapabilities = function (pirateId) {
-            return {
-                type: JK.movingCapabilites.horse
-            };
-        };
+      };
     }
 
-    common.inherit(HorseCellContent, cells.CellContent);
-
-})(window.JK);
+    Inheritance.inherit(HorseCellContent, CellContent);
+    return HorseCellContent;
+  });

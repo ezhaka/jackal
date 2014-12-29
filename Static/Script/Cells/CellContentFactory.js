@@ -1,32 +1,29 @@
-(function (JK) {
+define(
+  [
+    'cells/CellContentType',
+    'cells/EmptyCellContent',
+    'cells/ArrowCellContent',
+    'cells/HorseCellContent',
+    'cells/WaterCellContent'],
+  function (CellContentType, EmptyCellContent, ArrowCellContent, HorseCellContent, WaterCellContent) {
+    return {
+      create: function (model) {
+        switch (model.type) {
+          case CellContentType.empty:
+            return new EmptyCellContent(model);
 
-	JK.cellContentType = {
-		empty: 1,
-		arrow: 2,
-        horse: 3,
-        water: 4
-	};
+          case CellContentType.arrow:
+            return new ArrowCellContent(model);
 
-	JK.CellContentFactory = {};
-	var factory = JK.CellContentFactory;
+          case CellContentType.horse:
+            return new HorseCellContent(model);
 
-	factory.create = function (model) {
-		switch (model.type) {
-			case JK.cellContentType.empty:
-				return new JK.EmptyCellContent(model);
+          case CellContentType.water:
+            return new WaterCellContent(model);
 
-			case JK.cellContentType.arrow:
-				return new JK.ArrowCellContent(model);
-
-            case JK.cellContentType.horse:
-                return new JK.HorseCellContent(model);
-
-            case JK.cellContentType.water:
-                return new JK.WaterCellContent(model);
-
-			default:
-				throw new Error('Unknown cell content type ' + model.type);
-		}
-	}
-
-})(window.JK);
+          default:
+            throw new Error('Unknown cell content type ' + model.type);
+        }
+      }
+    };
+  });

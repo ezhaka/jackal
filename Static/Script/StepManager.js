@@ -1,20 +1,18 @@
-(function (global, JK) {
-    JK.StepManager = StepManager;
+define(['Event'], function (Event) {
+  return function () {
+    var pThis = this;
+    pThis.MoveComplete = new Event(this);
 
-    function StepManager() {
-        var pThis = this;
-        pThis.MoveComplete = new JK.Event(this);
-
-        pThis.move = function(pirateId, cellId) {
-            setTimeout(function (JK) {
-                pThis.MoveComplete.fireHandlers({
-                    pirateId: pirateId,
-                    cellId: cellId,
-                    cellContent: {
-                        type: 1
-                    }
-                })
-            }, 100);
-        };
-    }
-})(window, JK);
+    pThis.move = function (pirateId, cellId) {
+      setTimeout(function () {
+        pThis.MoveComplete.fireHandlers({
+          pirateId: pirateId,
+          cellId: cellId,
+          cellContent: {
+            type: 1
+          }
+        })
+      }, 100);
+    };
+  }
+});

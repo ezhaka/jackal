@@ -1,19 +1,17 @@
-(function (JK) {
+define(['Inheritance', 'cells/CellContentView'],
+  function (Inheritance, CellContentView) {
+    function HorseCellContentView(model) {
+      var pThis = this,
+        $node;
 
-    var common = JK.Common,
-        cells = JK.Cells;
+      pThis.render = function () {
+        $node = $node || HorseCellContentView.uber.getNode();
+        $node.addClass('horseCellContent');
+        $node.text(model.direction);
+        return $node;
+      };
+    }
 
-    JK.HorseCellContentView = function (model) {
-        var pThis = this,
-            $node;
-
-        pThis.render = function () {
-            $node = $node || JK.HorseCellContentView.uber.getNode();
-            $node.addClass('horseCellContent');
-            $node.text(model.direction);
-            return $node;
-        };
-    };
-
-    common.inherit(JK.HorseCellContentView, cells.CellContentView);
-})(window.JK);
+    Inheritance.inherit(HorseCellContentView, CellContentView);
+    return HorseCellContentView;
+  });

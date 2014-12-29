@@ -1,135 +1,135 @@
-(function (JK) {
+define(['Event', 'cells/CellContentFactory', 'MovingCapabilites', 'CellView'],
+  function (Event, CellContentFactory, MovingCapabilites, CellView) {
 
-	/*
-	 Accepts model:
-	 {
-	 id: 0,
-	 type: 0,
-	 allocator: JK.Allocator
-	 }
-	 */
+    /*
+     Accepts model:
+     {
+     id: 0,
+     type: 0,
+     allocator: Allocator
+     }
+     */
 
-	JK.Cell = function (modelMeta) {
-		var pThis = this,
-			view,
-			cellContent;
+    return function (modelMeta) {
+      var pThis = this,
+        view,
+        cellContent;
 
-		pThis.render = render;
-		pThis.bindEvents = bindEvents;
-		pThis.coords = coords;
-		pThis.getPiratePosition = getPiratePosition;
-		pThis.getOffset = getOffset;
-		pThis.getId = getId;
-		pThis.getMovingCapabilities = getMovingCapabilities;
-		pThis.toggleHighlight = toggleHighlight;
-        pThis.isClosed = isClosed;
-        pThis.setContent = setContent;
-        pThis.getContent = getContent;
+      pThis.render = render;
+      pThis.bindEvents = bindEvents;
+      pThis.coords = coords;
+      pThis.getPiratePosition = getPiratePosition;
+      pThis.getOffset = getOffset;
+      pThis.getId = getId;
+      pThis.getMovingCapabilities = getMovingCapabilities;
+      pThis.toggleHighlight = toggleHighlight;
+      pThis.isClosed = isClosed;
+      pThis.setContent = setContent;
+      pThis.getContent = getContent;
 
-		pThis.Click = new JK.Event(pThis);
+      pThis.Click = new Event(pThis);
 
-		function render() {
-			return view.render(cellContent ? cellContent.render() : undefined);
-		}
+      function render() {
+        return view.render(cellContent ? cellContent.render() : undefined);
+      }
 
-		function bindEvents() {
-			view.bindEvents();
+      function bindEvents() {
+        view.bindEvents();
 
-			view.Click.addHandler(function (JK) {
-				pThis.Click.fireHandlers();
-			});
-		}
+        view.Click.addHandler(function () {
+          pThis.Click.fireHandlers();
+        });
+      }
 
-        function isClosed() {
-            return !cellContent;
+      function isClosed() {
+        return !cellContent;
+      }
+
+      function coords() {
+        return modelMeta.coords;
+      }
+
+      function getId() {
+        return modelMeta.id;
+      }
+
+      function setContent(contentModel) {
+        if (!contentModel) {
+          throw new Error('content model is empty');
         }
 
-		function coords() {
-			return modelMeta.coords;
-		}
+        cellContent = CellContentFactory.create(contentModel);
+        view.updateContent(cellContent.render());
+      }
 
-		function getId() {
-			return modelMeta.id;
-		}
+      function getContent() {
+        return cellContent;
+      }
 
-        function setContent(contentModel) {
-            if (!contentModel) {
-                throw new Error('content model is empty');
-            }
+      /*
+       returns {
+       coords: [px, px],
+       size: [px, px]
+       }
+       or undefined if pirate is not on the field
+       */
+      function getPiratePosition(pirateId) {
+        var piratePosition = modelMeta.allocator.getPirateLocation(pirateId);
 
-            cellContent = JK.CellContentFactory.create(contentModel);
-            view.updateContent(cellContent.render());
+        if (piratePosition.cellId != modelMeta.id) {
+          throw new Error('Pirate is not on the cell, pirateId: ' + pirateId);
         }
 
-        function getContent() {
-            return cellContent;
-        }
+        var neighbourPirateIds = modelMeta.allocator
+          .getCellPirateIds(modelMeta.id, piratePosition.step)
+          .filter(function (pid) {
+            return pid != pirateId;
+          });
 
-		/*
-		 returns {
-		 coords: [px, px],
-		 size: [px, px]
-		 }
-		 or undefined if pirate is not on the field
-		 */
-		function getPiratePosition(pirateId) {
-			var piratePosition = modelMeta.allocator.getPirateLocation(pirateId);
+        return view.getPiratePosition(
+          pirateId,
+          neighbourPirateIds);
+      }
 
-			if (piratePosition.cellId != modelMeta.id) {
-				throw new Error('Pirate is not on the cell, pirateId: ' + pirateId);
-			}
+      function getOffset() {
+        return view.getOffset();
+      }
 
-			var neighbourPirateIds = modelMeta.allocator
-				.getCellPirateIds(modelMeta.id, piratePosition.step)
-				.filter(function (pid) {
-					return pid != pirateId;
-				});
-
-			return view.getPiratePosition(
-				pirateId,
-				neighbourPirateIds);
-		}
-
-		function getOffset() {
-			return view.getOffset();
-		}
-
-		function toggleHighlight(highlighted) {
+      function toggleHighlight(highlighted) {
 //			if (cellContent) {
 //				cellContent.toggleHighlight(highlighted);
 //				return;
 //			}
 
-			view.toggleHighlight(highlighted);
-		}
+        view.toggleHighlight(highlighted);
+      }
 
-		/*
-		 returns
-		 {
-		 type: 0,
-		 direction: 0,
-		 haveToMakeAnotherStep: 0
-		 }
-		 */
-		function getMovingCapabilities(pirateId) {
-			if (!cellContent) {
-				return {
-					type: JK.movingCapabilites.neighbor
-				};
-			}
+      /*
+       returns
+       {
+       type: 0,
+       direction: 0,
+       haveToMakeAnotherStep: 0
+       }
+       */
+      function getMovingCapabilities(pirateId) {
+        if (!cellContent) {
+          return {
+            type: MovingCapabilites.neighbor
+          };
+        }
 
-			return cellContent.getMovingCapabilities(pirateId);
-		}
+        return cellContent.getMovingCapabilities(pirateId);
+      }
 
-		function init() {
-			view = new JK.CellView({ id: modelMeta.id });
+      function init() {
+        view = new CellView({id: modelMeta.id});
 
-			if (modelMeta.content) {
-				cellContent = JK.CellContentFactory.create(modelMeta.content);
-			}
-		}
+        if (modelMeta.content) {
+          cellContent = CellContentFactory.create(modelMeta.content);
+        }
+      }
 
-		init();
-	};
-
-})(window.JK);
+      init();
+    };
+  });

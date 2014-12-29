@@ -1,29 +1,26 @@
-(function (JK) {
-
-    var common = JK.Common,
-        cells = JK.Cells;
-
-	JK.ArrowCellContent = ArrowCellContent;
-
+define(['cells/ArrowCellContentView', 'MovingCapabilites', 'cells/CellContent', 'Inheritance'],
+  function (ArrowCellContentView, MovingCapabilites, CellContent, Inheritance) {
     function ArrowCellContent(model) {
-		var view;
+      var view;
 
-        this.getContentType = function () { return model.type; };
-        
-        this.getView = function () {
-            view = view || new JK.ArrowCellContentView(model);
-            return view;
+      this.getContentType = function () {
+        return model.type;
+      };
+
+      this.getView = function () {
+        view = view || new ArrowCellContentView(model);
+        return view;
+      };
+
+      this.getMovingCapabilities = function (pirateId) {
+        return {
+          direction: model.direction,
+          type: MovingCapabilites.neighbor,
+          haveToMakeAnotherStep: true
         };
+      };
+    }
 
-		this.getMovingCapabilities = function (pirateId) {
-			return {
-				direction: model.direction,
-				type: JK.movingCapabilites.neighbor,
-				haveToMakeAnotherStep: true
-			};
-		};
-	}
-
-    common.inherit(ArrowCellContent, cells.CellContent);
-
-})(window.JK);
+    Inheritance.inherit(ArrowCellContent, CellContent);
+    return ArrowCellContent;
+  });
