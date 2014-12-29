@@ -390,8 +390,10 @@ requirejs(['game'],
       fieldSize: [6, 6]
     };
 
-    var game = new Game();
-    game.init(model);
-    game.render($('.gameContainer'));
-    game.bindEvents();
+    $(function () {
+      var game = new Game();
+      game.init(model);
+      game.render($('.gameContainer'));
+      game.bindEvents();
+    });
   });

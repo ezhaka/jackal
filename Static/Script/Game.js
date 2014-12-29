@@ -18,7 +18,7 @@ define(['allocator', 'player', 'field', 'pirate', 'stepManager'],
           if ($pirateNode) {
             $container.append($pirateNode);
           }
-        })
+        });
       }
 
       function renderPirate(pirate) {
@@ -159,8 +159,6 @@ define(['allocator', 'player', 'field', 'pirate', 'stepManager'],
         });
 
         model.pirates = modelMeta.pirates.map(function (pirateMeta) {
-
-
           return new Pirate(pirateMeta);
         });
 

@@ -2,7 +2,8 @@ define(['Event'], function (Event) {
   return function (model) {
     var pThis = this,
       $node,
-      selectedClass = 'selected';
+      selectedClass = 'selected',
+      view;
 
     pThis.render = render;
     pThis.bindEvents = bindEvents;
