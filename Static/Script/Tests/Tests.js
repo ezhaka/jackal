@@ -6,7 +6,8 @@ requirejs(
   [
     'tests/neighborCellsProvider',
     'tests/horseCellsProvider',
-    'tests/cellHelper'
+    'tests/cellHelper',
+    'tests/waterFilter'
   ],
   function () {
   });

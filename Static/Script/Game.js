@@ -41,7 +41,7 @@ define(['allocator', 'player', 'field', 'pirate', 'stepManager'],
         };
       }
 
-      function getAllocator(piratesMeta) {
+      function initAllocator(piratesMeta) {
         var pirateToCell = {};
 
         for (var i = 0, len = piratesMeta.length; i < len; i++) {
@@ -58,7 +58,6 @@ define(['allocator', 'player', 'field', 'pirate', 'stepManager'],
 
       function bindEvents() {
         model.field.bindEvents();
-
         model.field.CellClick.addHandler(onCellClick);
 
         model.pirates.forEach(function (pirate) {
@@ -155,7 +154,7 @@ define(['allocator', 'player', 'field', 'pirate', 'stepManager'],
           cells: modelMeta.cells,
           pirates: modelMeta.pirates,
           fieldSize: modelMeta.fieldSize,
-          allocator: getAllocator(modelMeta.pirates)
+          allocator: initAllocator(modelMeta.pirates)
         });
 
         model.pirates = modelMeta.pirates.map(function (pirateMeta) {
@@ -166,5 +165,4 @@ define(['allocator', 'player', 'field', 'pirate', 'stepManager'],
         stepManager.MoveComplete.addHandler(onMoveComplete);
       }
     };
-
   });
