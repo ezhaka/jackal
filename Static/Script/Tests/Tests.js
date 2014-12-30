@@ -5,6 +5,7 @@ requirejs.config({
 requirejs(
   [
     'tests/neighborCellsProvider',
+    'tests/horseCellsProvider',
     'tests/cellHelper'
   ],
   function () {

@@ -1,16 +1,6 @@
-define(['direction', 'cell', 'availableCellsProvider/neighborCellsProvider'],
-  function (Direction, Cell, NeighborCellsProvider) {
-    var cells3x3 = [];
-    var indx = 0;
-
-    for (var i = 0; i < 3; i++) {
-      for (var j = 0; j < 3; j++) {
-        cells3x3[indx] = new Cell({id: indx + 1, coords: [i, j]});
-        indx++;
-      }
-    }
-
-    var cellsProvider = new NeighborCellsProvider(cells3x3);
+define(['direction', 'cell', 'availableCellsProvider/neighborCellsProvider', 'tests/stubCellsGenerator'],
+  function (Direction, Cell, NeighborCellsProvider, StubCellsGenerator) {
+    var cellsProvider = new NeighborCellsProvider(StubCellsGenerator.generate(3, 3));
 
     QUnit.test(
       'neighborCellsProvider corner case, any direction',
