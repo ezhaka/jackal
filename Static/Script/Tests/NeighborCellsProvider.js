@@ -32,4 +32,14 @@ define(['direction', 'cell', 'availableCellsProvider/neighborCellsProvider'],
         var neighborCells = cellsProvider.getNeighborCells({}, [1, 1]);
         assert.deepEqual(neighborCells.map(function (c) { return c.getId(); }), [1, 2, 3, 4, 6, 7, 8, 9]);
       });
+
+    QUnit.test(
+      'neighborCellsProvider center, directions: top-left, top-right, bottom',
+      function (assert) {
+        var neighborCells = cellsProvider.getNeighborCells(
+          { direction: Direction.topLeft | Direction.topRight | Direction.bottom },
+          [1, 1]);
+
+        assert.deepEqual(neighborCells.map(function (c) { return c.getId(); }), [1, 3, 8]);
+      });
   });

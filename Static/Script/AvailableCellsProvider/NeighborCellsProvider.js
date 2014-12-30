@@ -5,14 +5,14 @@ define(['availableCellsProvider/cellHelper', 'direction'],
         var availableCoords = [];
 
         var directionMapping = {};
-        directionMapping[Direction.top] = [0, 1];
-        directionMapping[Direction.topRight] = [1, 1];
-        directionMapping[Direction.right] = [1, 0];
-        directionMapping[Direction.bottomRight] = [1, -1];
-        directionMapping[Direction.bottom] = [0, -1];
-        directionMapping[Direction.bottomLeft] = [-1, -1];
-        directionMapping[Direction.left] = [-1, 0];
-        directionMapping[Direction.topLeft] = [-1, 1];
+        directionMapping[Direction.top] = [-1, 0];
+        directionMapping[Direction.topRight] = [-1, 1];
+        directionMapping[Direction.right] = [0, 1];
+        directionMapping[Direction.bottomRight] = [1, 1];
+        directionMapping[Direction.bottom] = [1, 0];
+        directionMapping[Direction.bottomLeft] = [1, -1];
+        directionMapping[Direction.left] = [0, -1];
+        directionMapping[Direction.topLeft] = [-1, -1];
 
         for (var m in directionMapping) {
           if (directionMapping.hasOwnProperty(m)) {
