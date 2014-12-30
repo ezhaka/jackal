@@ -6,6 +6,7 @@ define(['Event', 'cells/CellContentFactory', 'MovingCapabilites', 'CellView'],
      {
      id: 0,
      type: 0,
+     coords: [],
      allocator: Allocator
      }
      */

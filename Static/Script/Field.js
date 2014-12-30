@@ -1,5 +1,13 @@
 define(
-  ['event', 'movingCapabilites', 'direction', 'cell', 'cells/cellContentType', 'fieldView', 'availableCellsProvider'],
+  [
+    'event',
+    'movingCapabilites',
+    'direction',
+    'cell',
+    'cells/cellContentType',
+    'fieldView',
+    'availableCellsProvider/availableCellsProvider'
+  ],
   function (Event, MovingCapabilites, Direction, Cell, CellContentType, FieldView, AvailableCellsProvider) {
 
     /*
@@ -97,7 +105,7 @@ define(
           cells: cells
         });
 
-        availableCellsProvider = new AvailableCellsProvider({ cells: cells });
+        availableCellsProvider = new AvailableCellsProvider(cells);
       }
 
       init();
