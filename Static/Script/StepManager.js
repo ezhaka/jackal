@@ -14,5 +14,14 @@ define(['Event'], function (Event) {
         })
       }, 100);
     };
+
+    pThis.moveToShip = function (pirateId, shipId) {
+      setTimeout(function () {
+        pThis.MoveComplete.fireHandlers({
+          pirateId: pirateId,
+          shipId: shipId
+        })
+      })
+    }
   }
 });

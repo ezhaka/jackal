@@ -1,5 +1,5 @@
-define(['Ship'],
-  function (Ship) {
+define(['ship', 'event'],
+  function (Ship, Event) {
     return function (shipModels) {
       var pThis = this,
         ships = shipModels.map(function (m) {
@@ -13,5 +13,17 @@ define(['Ship'],
           return s.getId() == id;
         })[0];
       };
+
+      pThis.getShipsByCellIds = function(cellIds) {
+        return ships.filter(function (s) {
+          return cellIds.indexOf(s.getCellId()) != -1;
+        })
+      };
+
+      pThis.highlightShips = function(ships) {
+        ships.forEach(function (s) {
+          s.highlight();
+        })
+      }
     }
   });

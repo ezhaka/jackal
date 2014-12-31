@@ -1,11 +1,12 @@
-define(['allocator', 'player', 'field', 'pirate', 'stepManager', 'shipsContainer'],
-  function (Allocator, Player, Field, Pirate, StepManager, ShipsContainer) {
+define(['allocator', 'player', 'field', 'pirate', 'stepManager', 'shipsContainer', 'AvailableCellsProvider/AvailableCellsProvider'],
+  function (Allocator, Player, Field, Pirate, StepManager, ShipsContainer, AvailableCellsProvider) {
     return function () {
       var pThis = this,
         model = {},
         stepManager,
         allocator,
-        shipContainer;
+        shipContainer,
+        availableCellsProvider;
 
       pThis.init = init;
       pThis.render = render;
@@ -55,17 +56,19 @@ define(['allocator', 'player', 'field', 'pirate', 'stepManager', 'shipsContainer
         })
       }
 
-      function onPirateClick(sender, args) {
-        sender.select();
-        model.field.highlightAvailableCells(sender);
-      }
-
       function getSelectedPirate() {
         var selectedPirate = model.pirates.filter(function (p) {
           return p.getIsSelected();
         });
 
         return selectedPirate.length > 0 ? selectedPirate[0] : null;
+      }
+
+      function onPirateClick(sender, args) {
+        sender.select();
+        model.field.highlightAvailableCells(sender);
+        shipContainer.highlightShips(
+          availableCellsProvider.getAvailableShips(sender, model.field.getPirateCell(sender.getId())));
       }
 
       function onCellClick(field, args) {
@@ -76,7 +79,7 @@ define(['allocator', 'player', 'field', 'pirate', 'stepManager', 'shipsContainer
           return;
         }
 
-        if (model.field.canMoveTo(selectedPirate, cell)) {
+        if (availableCellsProvider.canMoveToCell(selectedPirate, model.field.getPirateCell(selectedPirate.getId()), cell.getId())) {
           stepManager.move(selectedPirate.getId(), cell.getId());
         }
         else {
@@ -84,6 +87,24 @@ define(['allocator', 'player', 'field', 'pirate', 'stepManager', 'shipsContainer
         }
 
         model.field.removeCellsHighlight();
+        shipContainer.removeHighlights();
+      }
+
+
+      function onShipClick(ship) {
+        var selectedPirate = getSelectedPirate();
+
+        if (selectedPirate) {
+          if (availableCellsProvider.canMoveToShip(selectedPirate, model.field.getPirateCell(selectedPirate.getId()), ship.getId())) {
+            stepManager.moveToShip(ship.getId());
+          }
+          else {
+            selectedPirate.deselect();
+          }
+
+          model.field.removeCellsHighlight();
+          shipContainer.removeHighlights();
+        }
       }
 
       function onMoveComplete(sender, args) {
@@ -175,6 +196,9 @@ define(['allocator', 'player', 'field', 'pirate', 'stepManager', 'shipsContainer
         stepManager.MoveComplete.addHandler(onMoveComplete);
 
         shipContainer = new ShipsContainer(modelMeta.ships);
+        shipContainer.getShips().Click.addHandler(onShipClick);
+
+        availableCellsProvider = new AvailableCellsProvider(model.field.getCells());
       }
     };
   });

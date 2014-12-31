@@ -26,10 +26,10 @@ define(
       pThis.getPirateCell = getPirateCell;
       pThis.highlightAvailableCells = highlightAvailableCells;
       pThis.removeCellsHighlight = removeCellsHighlight;
-      pThis.canMoveTo = canMoveTo;
       pThis.moveTo = moveTo;
       pThis.getCellById = getCellById;
       pThis.getAvailableCells = getAvailableCells;
+      pThis.getCells = getCells;
 
       pThis.CellClick = new Event(pThis);
 
@@ -63,13 +63,6 @@ define(
         });
       }
 
-      function canMoveTo(pirate, cell) {
-        var availableCells = getAvailableCells(pirate);
-        return availableCells.filter(function (ac) {
-            return ac.getId() == cell.getId();
-          }).length > 0;
-      }
-
       function moveTo(pirate, cell) {
         // todo: check can move?
         modelMeta.allocator.setPirateLocation(pirate.getId(), {
@@ -93,6 +86,10 @@ define(
         var cellInfo = modelMeta.allocator.getPirateLocation(pirateId);
         var cellId = cellInfo.cellId;
         return getCellById(cellId);
+      }
+
+      function getCells() {
+        return cells;
       }
 
       function init() {

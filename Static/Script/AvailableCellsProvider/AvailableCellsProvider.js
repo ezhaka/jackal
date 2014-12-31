@@ -8,9 +8,34 @@ define(
     'availableCellsProvider/WaterFilter'
   ],
   function (MovingCapabilites, Direction, CellContentType, NeighborCellsProvider, HorseCellsProvider, WaterFilter) {
-    return function (cells) {
+    // todo: use allocator instead of cells ?
+    return function (cells, shipsContainer) {
       var pThis = this;
       pThis.getAvailableCells = getAvailableCells;
+      pThis.getAvailableShips = getAvailableShips;
+      pThis.canMoveToCell = canMoveToCell;
+      pThis.canMoveToShip = canMoveToShip;
+
+      function getAvailableShips(pirateId, pirateCell) {
+        var availableCells = getAvailableByCurrentCellType(pirateId, pirateCell);
+        return shipsContainer.getShipsByCellIds(availableCells.map(function (c) { return c.getId(); }));
+      }
+
+      function canMoveToShip(pirateId, pirateCell, shipId) {
+        return pThis.getAvailableShips(pirateId, pirateCell)
+            .filter(function (s) {
+              return s.getId() == shipId
+            })
+            .length > 0;
+      }
+
+      function canMoveToCell(pirateId, pirateCell, cellId) {
+        return pThis.getAvailableCells(pirateId, pirateCell)
+            .filter(function (с) {
+              return c.getId() == cellId
+            })
+            .length > 0;
+      }
 
       function getAvailableCells(pirateId, pirateCell) {
         var availableCells = getAvailableByCurrentCellType(pirateId, pirateCell);
