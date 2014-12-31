@@ -1,8 +1,19 @@
 .cellContainer,
 .cellContainer .cellBack,
-.cellContainer .cellContentWrapper {
+.cellContainer .cellContentWrapper,
+.ship {
     width: 100px;
     height: 100px;
+}
+
+.ship {
+    background-color: coral;
+    font-size: 36px;
+    position: absolute;
+    z-index: 2;
+    color: #fff;
+    line-height: 100px;
+    text-align: center;
 }
 
 .cellContainer .cellBack {
@@ -10,7 +21,8 @@
 }
 
 .cellContainer .cellBack,
-.cellContainer .cellContentWrapper {
+.cellContainer .cellContentWrapper,
+.ship {
     border: 1px solid black;
     border-radius: 3px;
     position: absolute;

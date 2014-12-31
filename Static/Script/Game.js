@@ -1,9 +1,11 @@
-define(['allocator', 'player', 'field', 'pirate', 'stepManager'],
-  function (Allocator, Player, Field, Pirate, StepManager) {
+define(['allocator', 'player', 'field', 'pirate', 'stepManager', 'shipsContainer'],
+  function (Allocator, Player, Field, Pirate, StepManager, ShipsContainer) {
     return function () {
       var pThis = this,
         model = {},
-        stepManager;
+        stepManager,
+        allocator,
+        shipContainer;
 
       pThis.init = init;
       pThis.render = render;
@@ -13,47 +15,34 @@ define(['allocator', 'player', 'field', 'pirate', 'stepManager'],
         $container.html(model.field.render());
 
         model.pirates.forEach(function (pirate) {
-          var $pirateNode = renderPirate(pirate);
+          var $pirateNode = pirate.render(getPirateCoordsAndSize(pirate));
+          $container.append($pirateNode);
+        });
 
-          if ($pirateNode) {
-            $container.append($pirateNode);
-          }
+        shipContainer.getShips().forEach(function (ship) {
+          $container.append(ship.render(getShipCoords(ship)));
         });
       }
 
-      function renderPirate(pirate) {
-        return pirate.render(getPirateCoordsAndSize(pirate));
-      }
-
       function getPirateCoordsAndSize(pirate) {
-        var pirateCell = model.field.getPirateCell(pirate.getId());
-        var relativePosition = pirateCell.getPiratePosition(pirate.getId());
+        var pirateId = pirate.getId();
+        var locationInfo = allocator.getPirateLocation(pirateId);
+        var location = locationInfo.cellId
+          ? model.field.getCellById(locationInfo.cellId)
+          : shipContainer.getById(locationInfo.shipId);
 
-        if (!relativePosition) {
-          return null;
-        }
-
-        var cellCoords = pirateCell.getOffset();
+        var relativePosition = location.getPiratePosition(pirateId);
+        var locationCoords = location.getOffset();
 
         return {
-          coords: [relativePosition.coords[0] + cellCoords[0], relativePosition.coords[1] + cellCoords[1]],
+          coords: [relativePosition.coords[0] + locationCoords[0], relativePosition.coords[1] + locationCoords[1]],
           size: relativePosition.size
         };
       }
 
-      function initAllocator(piratesMeta) {
-        var pirateToCell = {};
-
-        for (var i = 0, len = piratesMeta.length; i < len; i++) {
-          var pirate = piratesMeta[i];
-
-          pirateToCell[pirate.id] = {
-            cellId: pirate.cellId,
-            step: pirate.step
-          };
-        }
-
-        return new Allocator(pirateToCell);
+      function getShipCoords(ship) {
+        var cellId = allocator.getShipCellId(ship.getId());
+        return model.field.getCellById(cellId).getOffset();
       }
 
       function bindEvents() {
@@ -126,6 +115,25 @@ define(['allocator', 'player', 'field', 'pirate', 'stepManager'],
         })[0];
       }
 
+      function initAllocator(piratesMeta, shipsMeta) {
+        var pirateToLocation = {};
+
+        piratesMeta.forEach(function (pirate) {
+          pirateToLocation[pirate.id] = {
+            cellId: pirate.cellId,
+            step: pirate.step
+          };
+        });
+
+        var shipToCell = {};
+
+        shipsMeta.forEach(function (ship) {
+          shipToCell[ship.id] = ship.cellId;
+        });
+
+        allocator = new Allocator(pirateToLocation, shipToCell);
+      }
+
       /*
        Accepts model: {
        players: [{
@@ -146,6 +154,8 @@ define(['allocator', 'player', 'field', 'pirate', 'stepManager'],
        }
        */
       function init(modelMeta) {
+        initAllocator(modelMeta.pirates, modelMeta.ships);
+
         model.players = modelMeta.players.map(function (playerMeta) {
           return new Player(playerMeta);
         });
@@ -154,7 +164,7 @@ define(['allocator', 'player', 'field', 'pirate', 'stepManager'],
           cells: modelMeta.cells,
           pirates: modelMeta.pirates,
           fieldSize: modelMeta.fieldSize,
-          allocator: initAllocator(modelMeta.pirates)
+          allocator: allocator
         });
 
         model.pirates = modelMeta.pirates.map(function (pirateMeta) {
@@ -163,6 +173,8 @@ define(['allocator', 'player', 'field', 'pirate', 'stepManager'],
 
         stepManager = new StepManager();
         stepManager.MoveComplete.addHandler(onMoveComplete);
+
+        shipContainer = new ShipsContainer(modelMeta.ships);
       }
     };
   });

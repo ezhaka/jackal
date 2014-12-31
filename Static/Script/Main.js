@@ -5,10 +5,11 @@ requirejs.config({
 requirejs(['game'],
   function (Game) {
     var model = {
-      players: [{
-        id: 1,
-        name: 'mcgee'
-      },
+      players: [
+        {
+          id: 1,
+          name: 'mcgee'
+        },
         {
           id: 2,
           name: 'asko'
@@ -86,9 +87,7 @@ requirejs(['game'],
         },
         {
           "id": 7,
-          "content": {
-            "type": 1
-          },
+
           "coords": [
             1,
             1
@@ -96,9 +95,6 @@ requirejs(['game'],
         },
         {
           "id": 8,
-          "content": {
-            "type": 1
-          },
           "coords": [
             1,
             2
@@ -106,9 +102,6 @@ requirejs(['game'],
         },
         {
           "id": 9,
-          "content": {
-            "type": 1
-          },
           "coords": [
             1,
             3
@@ -387,6 +380,13 @@ requirejs(['game'],
           playerId: 1,
           cellId: 4
         }],
+      ships: [
+        {
+          id: 1,
+          playerId: 1,
+          cellId: 3
+        }
+      ],
       fieldSize: [6, 6]
     };
 

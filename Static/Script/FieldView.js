@@ -5,13 +5,13 @@ define(function () {
     pThis.render = function () {
       var result = $('<table class="field" />');
 
-      for (var y = 0; y < model.fieldSize[0]; y++) {
+      for (var i = 0; i < model.fieldSize[0]; i++) {
         var row = $('<tr />');
         result.append(row);
 
-        for (var x = 0; x < model.fieldSize[1]; x++) {
+        for (var j = 0; j < model.fieldSize[1]; j++) {
           var cell = model.cells.filter(function (cellItem) {
-            return cellItem.coords()[0] == x && cellItem.coords()[1] == y;
+            return cellItem.coords()[0] == i && cellItem.coords()[1] == j;
           });
 
           if (!cell || cell.length == 0) {
