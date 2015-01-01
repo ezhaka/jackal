@@ -6,9 +6,11 @@ define(
     'cell',
     'cells/cellContentType',
     'fieldView',
-    'availableCellsProvider/availableCellsProvider'
+    'availableCellsProvider/availableCellsProvider',
+    'MovingObjectType',
+    'locationType'
   ],
-  function (Event, MovingCapabilites, Direction, Cell, CellContentType, FieldView, AvailableCellsProvider) {
+  function (Event, MovingCapabilites, Direction, Cell, CellContentType, FieldView, AvailableCellsProvider, MovingObjectType, LocationType) {
 
     /*
      Accepts model:
@@ -65,9 +67,9 @@ define(
 
       function moveTo(pirate, cell) {
         // todo: check can move?
-        modelMeta.allocator.setPirateLocation(pirate.getId(), {
-          cellId: cell.getId()
-        });
+        modelMeta.allocator.setObjectLocation(
+          { type: MovingObjectType.pirate, id: pirate.getId() },
+          { type: LocationType.cell, cellId: cell.getId() });
       }
 
       function removeCellsHighlight() {
@@ -83,7 +85,7 @@ define(
       }
 
       function getPirateCell(pirateId) {
-        var cellInfo = modelMeta.allocator.getPirateLocation(pirateId);
+        var cellInfo = modelMeta.allocator.getObjectLocation({ type: MovingObjectType.pirate, id: pirateId });
         var cellId = cellInfo.cellId;
         return getCellById(cellId);
       }

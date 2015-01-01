@@ -373,18 +373,27 @@ requirejs(['game'],
       pirates: [{
         id: 1,
         playerId: 1,
-        cellId: 15
+        location: {
+          type: 1,
+          cellId: 15
+        }
       },
         {
           id: 2,
           playerId: 1,
-          cellId: 4
+          location: {
+            type: 1,
+            cellId: 4
+          }
         }],
       ships: [
         {
           id: 1,
           playerId: 1,
-          cellId: 3
+          location: {
+            type: 1,
+            cellId: 3
+          }
         }
       ],
       fieldSize: [6, 6]

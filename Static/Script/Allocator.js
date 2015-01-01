@@ -3,55 +3,52 @@ define(function () {
   /*
    accepts
    pirateToLocation = {
-   pirateId : { shipId: 0 } or { cellId: 0, step: 0 }
+   'type_id' : { type: , shipId: 0 } or { type, cellId: 0, step: 0 }
    }
    */
 
-  return function (pirateToLocation, shipToCell) {
-    var pThis = this;
+  return function () {
+    var pThis = this,
+      objectToLocation = {};
 
-    pThis.getPirateLocation = getPirateLocation;
-    pThis.setPirateLocation = setPirateLocation;
-    pThis.getCellPirateIds = getCellPirateIds;
-    pThis.getShipPirateIds = getShipPirateIds;
-    pThis.getShipCellId = getShipCellId;
+    pThis.getObjectLocation = getObjectLocation;
+    pThis.setObjectLocation = setObjectLocation;
+    pThis.getObjectsByLocation = getObjectsByLocation;
+
+    function getKey(obj) {
+      return obj.type + '_' + obj.id;
+    }
+
+    function getObject(key) {
+      var props = key.split('_');
+      return { type: +props[0], id: +props[1] };
+    }
 
     /* returns { cellId: 0, step: 0 } */
-    function getPirateLocation(pirateId) {
-      return pirateToLocation[pirateId];
+    function getObjectLocation(obj) {
+      return objectToLocation[getKey(obj)];
     }
 
     /* returns [0, 0, ...] */
-    function getCellPirateIds(cellId, step) {
-      return filterPirateIds(function (location) {
-        return location.cellId == cellId && (!step || location.step == step);
-      });
-    }
-
-    function getShipPirateIds(shipId) {
-      return filterPirateIds(function (location) { return location.shipId == shipId; });
-    }
-
-    function filterPirateIds(func) {
+    function getObjectsByLocation(location) {
       var result = [];
 
-      for (var pirateId in pirateToLocation) {
-        if (pirateToLocation.hasOwnProperty(pirateId)
-          && pirateToLocation[pirateId]
-          && func(pirateToLocation[pirateId])) {
-          result.push(pirateId);
+      for (var object_key in objectToLocation) {
+        if (objectToLocation.hasOwnProperty(object_key)
+          && areLocationsEqual(location, objectToLocation[object_key])) {
+          result.push(getObject(object_key));
         }
       }
 
       return result;
     }
 
-    function setPirateLocation(pirateId, locationInfo) {
-      pirateToLocation[pirateId] = locationInfo;
+    function setObjectLocation(obj, location) {
+      objectToLocation[getKey(obj)] = location;
     }
 
-    function getShipCellId(shipId) {
-      return shipToCell[shipId];
+    function areLocationsEqual(l1, l2) {
+      return l1.type == l2.type && l1.cellId === l2.cellId && l1.step === l2.step && l1.shipId == l2.shipId;
     }
   };
 

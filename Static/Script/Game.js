@@ -1,5 +1,16 @@
-define(['allocator', 'player', 'field', 'pirate', 'stepManager', 'shipsContainer', 'AvailableCellsProvider/AvailableCellsProvider'],
-  function (Allocator, Player, Field, Pirate, StepManager, ShipsContainer, AvailableCellsProvider) {
+define(
+  [
+    'allocator',
+    'player',
+    'field',
+    'pirate',
+    'stepManager',
+    'shipsContainer',
+    'AvailableCellsProvider/AvailableCellsProvider',
+    'movingObjectType',
+    'locationType'
+  ],
+  function (Allocator, Player, Field, Pirate, StepManager, ShipsContainer, AvailableCellsProvider, MovingObjectType, LocationType) {
     return function () {
       var pThis = this,
         model = {},
@@ -27,7 +38,7 @@ define(['allocator', 'player', 'field', 'pirate', 'stepManager', 'shipsContainer
 
       function getPirateCoordsAndSize(pirate) {
         var pirateId = pirate.getId();
-        var locationInfo = allocator.getPirateLocation(pirateId);
+        var locationInfo = allocator.getObjectLocation({ type: MovingObjectType.pirate, id: pirateId });
         var location = locationInfo.cellId
           ? model.field.getCellById(locationInfo.cellId)
           : shipContainer.getById(locationInfo.shipId);
@@ -42,8 +53,13 @@ define(['allocator', 'player', 'field', 'pirate', 'stepManager', 'shipsContainer
       }
 
       function getShipCoords(ship) {
-        var cellId = allocator.getShipCellId(ship.getId());
-        return model.field.getCellById(cellId).getOffset();
+        var shipLocation = allocator.getObjectLocation({ type: MovingObjectType.ship, id: ship.getId() });
+
+        if (shipLocation.type !== LocationType.cell) {
+          throw new Error('ship is not on a cell');
+        }
+
+        return model.field.getCellById(shipLocation.cellId).getOffset();
       }
 
       function bindEvents() {
@@ -137,22 +153,25 @@ define(['allocator', 'player', 'field', 'pirate', 'stepManager', 'shipsContainer
       }
 
       function initAllocator(piratesMeta, shipsMeta) {
-        var pirateToLocation = {};
+        allocator = new Allocator();
 
         piratesMeta.forEach(function (pirate) {
-          pirateToLocation[pirate.id] = {
-            cellId: pirate.cellId,
-            step: pirate.step
-          };
+          allocator.setObjectLocation(
+            {
+              type: MovingObjectType.pirate,
+              id: pirate.id
+            },
+            pirate.location);
         });
-
-        var shipToCell = {};
 
         shipsMeta.forEach(function (ship) {
-          shipToCell[ship.id] = ship.cellId;
+          allocator.setObjectLocation(
+            {
+              type: MovingObjectType.ship,
+              id: ship.id
+            },
+            ship.location);
         });
-
-        allocator = new Allocator(pirateToLocation, shipToCell);
       }
 
       /*
@@ -175,7 +194,7 @@ define(['allocator', 'player', 'field', 'pirate', 'stepManager', 'shipsContainer
        }
        */
       function init(modelMeta) {
-        initAllocator(modelMeta.pirates, modelMeta.ships);
+        initAllocator();
 
         model.players = modelMeta.players.map(function (playerMeta) {
           return new Player(playerMeta);
