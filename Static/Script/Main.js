@@ -375,7 +375,7 @@ requirejs(['game'],
         playerId: 1,
         location: {
           type: 1,
-          cellId: 15
+          id: 15
         }
       },
         {
@@ -383,7 +383,7 @@ requirejs(['game'],
           playerId: 1,
           location: {
             type: 1,
-            cellId: 4
+            id: 4
           }
         }],
       ships: [
@@ -392,7 +392,7 @@ requirejs(['game'],
           playerId: 1,
           location: {
             type: 1,
-            cellId: 3
+            id: 3
           }
         }
       ],

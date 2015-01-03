@@ -1,4 +1,4 @@
-define(['direction', 'cell', '../AvailableLocationsProvider/neighborCellsProvider', 'tests/stubCellsGenerator'],
+define(['direction', 'cell', 'AvailableLocationsProvider/neighborCellsProvider', 'tests/stubCellsGenerator'],
   function (Direction, Cell, NeighborCellsProvider, StubCellsGenerator) {
     var cellsProvider = new NeighborCellsProvider(StubCellsGenerator.generate(3, 3));
 

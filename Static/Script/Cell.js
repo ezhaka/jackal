@@ -76,14 +76,14 @@ define(['Event', 'cells/CellContentFactory', 'MovingCapabilites', 'CellView', 'M
        or undefined if pirate is not on the field
        */
       function getPiratePosition(pirateId) {
-        var piratePosition = modelMeta.allocator.getObjectLocationInfo({ id: pirateId, type: MovingObjectType.pirate });
+        var pirateLocationInfo = modelMeta.allocator.getObjectLocationInfo({ id: pirateId, type: MovingObjectType.pirate });
 
-        if (piratePosition.cellId != modelMeta.id) {
+        if (pirateLocationInfo.type != LocationType.cell && pirateLocationInfo.id != modelMeta.id) {
           throw new Error('Pirate is not on the cell, pirateId: ' + pirateId);
         }
 
         var neighbourPirateIds = modelMeta.allocator
-          .getObjectsByLocationInfo(new LocationInfo({ type: LocationType.cell, id: modelMeta.id, step: piratePosition.step }))
+          .getObjectsByLocationInfo(new LocationInfo({ type: LocationType.cell, id: modelMeta.id, step: pirateLocationInfo.step }))
           .filter(function (pid) {
             return pid != pirateId;
           });

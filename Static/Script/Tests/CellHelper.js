@@ -1,4 +1,4 @@
-define(['../AvailableLocationsProvider/cellHelper', 'cell'],
+define(['AvailableLocationsProvider/cellHelper', 'cell'],
   function (CellHelper, Cell) {
     QUnit.test(
       'getCellsByCoords([ [0, 0], [1, 1] ]) on field 2x2 returns [1, 4]',

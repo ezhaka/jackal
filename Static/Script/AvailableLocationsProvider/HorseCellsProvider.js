@@ -1,4 +1,4 @@
-define(['/cellHelper'],
+define(['availableLocationsProvider/cellHelper'],
   function (CellHelper) {
     return function (field) {
       this.getHorseCells = function (currentCoords) {

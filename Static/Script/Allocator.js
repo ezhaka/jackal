@@ -1,9 +1,9 @@
-define(['LocationType'], function (LocationType) {
+define(['LocationType', 'Event'], function (LocationType, Event) {
 
   /*
    accepts
    pirateToLocation = {
-   'type_id' : { type: , shipId: 0 } or { type, cellId: 0, step: 0 }
+   'type_id' : { type: , id: 0 } or { type, id: 0, step: 0 }
    }
    */
 

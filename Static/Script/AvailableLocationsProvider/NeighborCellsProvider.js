@@ -1,4 +1,4 @@
-define(['/cellHelper', 'direction'],
+define(['availableLocationsProvider/cellHelper', 'direction'],
   function (CellHelper, Direction) {
     return function (field) {
       this.getNeighborCells = function (movingCapabilities, currentCoords) {

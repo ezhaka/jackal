@@ -35,7 +35,8 @@ define(
         });
 
         shipContainer.getShips().forEach(function (ship) {
-          $container.append(ship.render(getShipCoords(ship)));
+          var location = locationProvider.getByInfo(allocator.getObjectLocationInfo(ship.getInfo()));
+          $container.append(ship.render(location));
         });
       }
 
@@ -174,7 +175,7 @@ define(
        }
        */
       function init(modelMeta) {
-        initAllocator();
+        initAllocator(modelMeta.pirates, modelMeta.ships);
 
         model.players = modelMeta.players.map(function (playerMeta) {
           return new Player(playerMeta);
@@ -192,7 +193,7 @@ define(
         });
 
         shipContainer = new ShipsContainer(modelMeta.ships);
-        shipContainer.getShips().Click.addHandler(onShipClick);
+        shipContainer.getShips().forEach(function (s) { s.Click.addHandler(onShipClick); });
 
         availableLocationsProvider = new AvailableLocationsProvider(model.field.getCells());
         locationProvider = new LocationProvider(model.field, shipContainer);

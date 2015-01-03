@@ -1,4 +1,4 @@
-define(['ShipView', 'event'],
+define(['ShipView', 'event', 'MovingObjectType'],
   function (ShipView, Event, MovingObjectType) {
     return function (model) {
       var pThis = this,
@@ -17,12 +17,12 @@ define(['ShipView', 'event'],
 
       pThis.Click = new Event(pThis);
 
-      function render(pxCoords) {
-        return view.render(pxCoords);
+      function render(location) {
+        return view.render(location.getOffset());
       }
 
-      function move(pxCoords) {
-        view.move(pxCoords);
+      function move(location) {
+        view.move(location.getOffset());
       }
 
       function getId() {

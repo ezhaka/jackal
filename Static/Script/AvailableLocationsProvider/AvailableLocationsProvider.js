@@ -3,11 +3,11 @@ define(
     'movingCapabilites',
     'direction',
     'cells/cellContentType',
-    '/NeighborCellsProvider',
-    '/HorseCellsProvider',
-    '/WaterFilter',
+    'availableLocationsProvider/NeighborCellsProvider',
+    'availableLocationsProvider/HorseCellsProvider',
+    'availableLocationsProvider/WaterFilter',
     'MovingObjectType',
-    '/AvailablePirateLocationsProvider'
+    'availableLocationsProvider/AvailablePirateLocationsProvider'
   ],
   function (MovingCapabilites, Direction, CellContentType, NeighborCellsProvider, HorseCellsProvider, WaterFilter, MovingObjectType, AvailablePirateLocationsProvider) {
     // todo: use allocator instead of cells ?

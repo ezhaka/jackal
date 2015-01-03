@@ -22,7 +22,8 @@ define(['Event', 'PirateView', 'MovingObjectType'],
        size: [px, px]
        }
        */
-      function render(position) {
+      function render(location) {
+        var position = getPirateCoordsAndSize(location);
         return view.render(position);
       }
 
