@@ -1,6 +1,6 @@
-define(['availableCellsProvider/cellHelper', 'direction'],
+define(['/cellHelper', 'direction'],
   function (CellHelper, Direction) {
-    return function (cells) {
+    return function (field) {
       this.getNeighborCells = function (movingCapabilities, currentCoords) {
         var availableCoords = [];
 
@@ -24,7 +24,7 @@ define(['availableCellsProvider/cellHelper', 'direction'],
           }
         }
 
-        return CellHelper.getCellsByCoords(availableCoords, cells);
+        return field.getCellsByCoords(availableCoords);
       }
     }
   });

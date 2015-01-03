@@ -1,64 +1,84 @@
-define(['Event', 'PirateView'], function (Event, PirateView) {
-  return function (modelMeta) {
-    var pThis = this,
-      view,
-      isSelected;
+define(['Event', 'PirateView', 'MovingObjectType'],
+  function (Event, PirateView, MovingObjectType) {
+    return function (modelMeta) {
+      var pThis = this,
+        view,
+        isSelected;
 
-    pThis.render = render;
-    pThis.getId = getId;
-    pThis.bindEvents = bindEvents;
-    pThis.select = select;
-    pThis.deselect = deselect;
-    pThis.getIsSelected = getIsSelected;
-    pThis.moveTo = moveTo;
+      pThis.render = render;
+      pThis.getId = getId;
+      pThis.bindEvents = bindEvents;
+      pThis.select = select;
+      pThis.deselect = deselect;
+      pThis.getIsSelected = getIsSelected;
+      pThis.moveTo = moveTo;
+      pThis.getInfo = getInfo;
 
-    pThis.Click = new Event(pThis);
+      pThis.Click = new Event(pThis);
 
-    /*
-     position = {
-     coords: [px, px],
-     size: [px, px]
-     }
-     */
-    function render(position) {
-      return view.render(position);
-    }
+      /*
+       position = {
+       coords: [px, px],
+       size: [px, px]
+       }
+       */
+      function render(position) {
+        return view.render(position);
+      }
 
-    function moveTo(position) {
-      view.moveTo(position);
-    }
+      function moveTo(location) {
+        var position = getPirateCoordsAndSize(location);
+        view.moveTo(position);
+      }
 
-    function getId() {
-      return modelMeta.id;
-    }
+      function getPirateCoordsAndSize(location) {
+        var relativePosition = location.getPiratePosition(getId());
+        var locationCoords = location.getOffset();
 
-    function bindEvents() {
-      view.bindEvents();
-    }
+        return {
+          coords: [relativePosition.coords[0] + locationCoords[0], relativePosition.coords[1] + locationCoords[1]],
+          size: relativePosition.size
+        };
+      }
 
-    function init() {
-      view = new PirateView({id: modelMeta.id});
+      function getId() {
+        return modelMeta.id;
+      }
 
-      view.Click.addHandler(function (args) {
-        pThis.Click.fireHandlers(args);
-      })
-    }
+      function bindEvents() {
+        view.bindEvents();
+      }
 
-    function select() {
-      isSelected = true;
-      view.select();
-    }
+      function init() {
+        view = new PirateView({id: modelMeta.id});
 
-    function deselect() {
-      isSelected = false;
-      view.deselect();
-    }
+        view.Click.addHandler(function (args) {
+          pThis.Click.fireHandlers(args);
+        })
+      }
 
-    function getIsSelected() {
-      return isSelected;
-    }
+      function getInfo() {
+        return {
+          id: modelMeta.id,
+          type: MovingObjectType.pirate
+        }
+      }
 
-    init();
-  };
+      function select() {
+        isSelected = true;
+        view.select();
+      }
 
-});
+      function deselect() {
+        isSelected = false;
+        view.deselect();
+      }
+
+      function getIsSelected() {
+        return isSelected;
+      }
+
+      init();
+    };
+
+  });

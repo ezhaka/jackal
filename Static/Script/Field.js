@@ -6,11 +6,9 @@ define(
     'cell',
     'cells/cellContentType',
     'fieldView',
-    'availableCellsProvider/availableCellsProvider',
-    'MovingObjectType',
-    'locationType'
+    'MovingObjectType'
   ],
-  function (Event, MovingCapabilites, Direction, Cell, CellContentType, FieldView, AvailableCellsProvider, MovingObjectType, LocationType) {
+  function (Event, MovingCapabilites, Direction, Cell, CellContentType, FieldView, MovingObjectType) {
 
     /*
      Accepts model:
@@ -20,18 +18,16 @@ define(
     return function (modelMeta) {
       var pThis = this,
         cells,
-        view,
-        availableCellsProvider;
+        view;
 
       pThis.render = render;
       pThis.bindEvents = bindEvents;
       pThis.getPirateCell = getPirateCell;
-      pThis.highlightAvailableCells = highlightAvailableCells;
+      pThis.highlightCells = highlightCells;
       pThis.removeCellsHighlight = removeCellsHighlight;
-      pThis.moveTo = moveTo;
       pThis.getCellById = getCellById;
-      pThis.getAvailableCells = getAvailableCells;
       pThis.getCells = getCells;
+      pThis.getCellsByCoords = getCellsByCoords;
 
       pThis.CellClick = new Event(pThis);
 
@@ -51,25 +47,10 @@ define(
         pThis.CellClick.fireHandlers(newArgs);
       }
 
-      function getAvailableCells(pirate) {
-        var pirateId = pirate.getId();
-        var pirateCell = getPirateCell(pirateId);
-        return availableCellsProvider.getAvailableCells(pirateId, pirateCell);
-      }
-
-      function highlightAvailableCells(pirate) {
-        var availableCells = getAvailableCells(pirate);
-
-        availableCells.forEach(function (c) {
+      function highlightCells(cells) {
+        cells.forEach(function (c) {
           c.toggleHighlight(true);
         });
-      }
-
-      function moveTo(pirate, cell) {
-        // todo: check can move?
-        modelMeta.allocator.setObjectLocation(
-          { type: MovingObjectType.pirate, id: pirate.getId() },
-          { type: LocationType.cell, cellId: cell.getId() });
       }
 
       function removeCellsHighlight() {
@@ -85,13 +66,28 @@ define(
       }
 
       function getPirateCell(pirateId) {
-        var cellInfo = modelMeta.allocator.getObjectLocation({ type: MovingObjectType.pirate, id: pirateId });
+        var cellInfo = modelMeta.allocator.getObjectLocationInfo({ type: MovingObjectType.pirate, id: pirateId });
         var cellId = cellInfo.cellId;
         return getCellById(cellId);
       }
 
       function getCells() {
         return cells;
+      }
+
+      function getCellsByCoords(coordsList, cells) {
+        return cells.filter(function (cell) {
+          var cellCoords = cell.coords();
+          var matchFound = false;
+
+          coordsList.forEach(function (coords) {
+            if (coords[0] == cellCoords[0] && coords[1] == cellCoords[1]) {
+              matchFound = true;
+            }
+          });
+
+          return matchFound;
+        })
       }
 
       function init() {
@@ -103,8 +99,6 @@ define(
           fieldSize: modelMeta.fieldSize,
           cells: cells
         });
-
-        availableCellsProvider = new AvailableCellsProvider(cells);
       }
 
       init();

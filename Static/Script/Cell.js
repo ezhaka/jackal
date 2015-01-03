@@ -1,5 +1,5 @@
-define(['Event', 'cells/CellContentFactory', 'MovingCapabilites', 'CellView', 'MovingObjectType', 'LocationType'],
-  function (Event, CellContentFactory, MovingCapabilites, CellView, MovingObjectType, LocationType) {
+define(['Event', 'cells/CellContentFactory', 'MovingCapabilites', 'CellView', 'MovingObjectType', 'LocationType', 'LocationInfo'],
+  function (Event, CellContentFactory, MovingCapabilites, CellView, MovingObjectType, LocationType, LocationInfo) {
 
     /*
      Accepts model:
@@ -27,6 +27,7 @@ define(['Event', 'cells/CellContentFactory', 'MovingCapabilites', 'CellView', 'M
       pThis.isClosed = isClosed;
       pThis.setContent = setContent;
       pThis.getContent = getContent;
+      pThis.getInfo = getInfo;
 
       pThis.Click = new Event(pThis);
 
@@ -75,14 +76,14 @@ define(['Event', 'cells/CellContentFactory', 'MovingCapabilites', 'CellView', 'M
        or undefined if pirate is not on the field
        */
       function getPiratePosition(pirateId) {
-        var piratePosition = modelMeta.allocator.getObjectLocation({ id: pirateId, type: MovingObjectType.pirate });
+        var piratePosition = modelMeta.allocator.getObjectLocationInfo({ id: pirateId, type: MovingObjectType.pirate });
 
         if (piratePosition.cellId != modelMeta.id) {
           throw new Error('Pirate is not on the cell, pirateId: ' + pirateId);
         }
 
         var neighbourPirateIds = modelMeta.allocator
-          .getObjectsByLocation({ type: LocationType.cell, cellId: modelMeta.id, step: piratePosition.step })
+          .getObjectsByLocationInfo(new LocationInfo({ type: LocationType.cell, id: modelMeta.id, step: piratePosition.step }))
           .filter(function (pid) {
             return pid != pirateId;
           });
@@ -94,6 +95,13 @@ define(['Event', 'cells/CellContentFactory', 'MovingCapabilites', 'CellView', 'M
 
       function getOffset() {
         return view.getOffset();
+      }
+
+      function getInfo() {
+        return new LocationInfo({
+          id: modelMeta.id,
+          type: LocationType.cell
+        })
       }
 
       function toggleHighlight(highlighted) {

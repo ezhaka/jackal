@@ -1,4 +1,4 @@
-define(function () {
+define(['LocationType'], function (LocationType) {
 
   /*
    accepts
@@ -11,44 +11,58 @@ define(function () {
     var pThis = this,
       objectToLocation = {};
 
-    pThis.getObjectLocation = getObjectLocation;
-    pThis.setObjectLocation = setObjectLocation;
-    pThis.getObjectsByLocation = getObjectsByLocation;
+    pThis.getObjectLocationInfo = getObjectLocationInfo;
+    pThis.initObjectLocation = setObjectLocation;
+    pThis.getObjectsByLocationInfo = getObjectsByLocationInfo;
+    pThis.move = move;
 
-    function getKey(obj) {
-      return obj.type + '_' + obj.id;
+    pThis.MoveComplete = new Event(this);
+
+    function move(objInfo, locationInfo) {
+      setTimeout(function () {
+        setObjectLocation(objInfo, locationInfo);
+
+        var loc = locationInfo.type == LocationType.cell
+          ? $.extend(locationInfo, { cellContent: { type: 1 } })
+          : locationInfo;
+
+        pThis.MoveComplete.fireHandlers({
+          objInfo: objInfo,
+          locationInfo: loc
+        })
+      }, 100);
     }
 
-    function getObject(key) {
+    function getKey(objInfo) {
+      return objInfo.type + '_' + objInfo.id;
+    }
+
+    function getObjectInfo(key) {
       var props = key.split('_');
       return { type: +props[0], id: +props[1] };
     }
 
     /* returns { cellId: 0, step: 0 } */
-    function getObjectLocation(obj) {
-      return objectToLocation[getKey(obj)];
+    function getObjectLocationInfo(objInfo) {
+      return objectToLocation[getKey(objInfo)];
     }
 
     /* returns [0, 0, ...] */
-    function getObjectsByLocation(location) {
+    function getObjectsByLocationInfo(locationInfo) {
       var result = [];
 
       for (var object_key in objectToLocation) {
         if (objectToLocation.hasOwnProperty(object_key)
-          && areLocationsEqual(location, objectToLocation[object_key])) {
-          result.push(getObject(object_key));
+          && locationInfo.equals(objectToLocation[object_key])) {
+          result.push(getObjectInfo(object_key));
         }
       }
 
       return result;
     }
 
-    function setObjectLocation(obj, location) {
-      objectToLocation[getKey(obj)] = location;
-    }
-
-    function areLocationsEqual(l1, l2) {
-      return l1.type == l2.type && l1.cellId === l2.cellId && l1.step === l2.step && l1.shipId == l2.shipId;
+    function setObjectLocation(objInfo, locationInfo) {
+      objectToLocation[getKey(objInfo)] = locationInfo;
     }
   };
 

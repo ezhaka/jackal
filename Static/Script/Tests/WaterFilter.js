@@ -1,4 +1,4 @@
-define(['availableCellsProvider/waterFilter', 'cells/cellContentType', 'cell'],
+define(['../AvailableLocationsProvider/waterFilter', 'cells/cellContentType', 'cell'],
   function (WaterFilter, CellContentType, Cell) {
     var cells = [
       new Cell({id: 1, coords: [0, 0], content: { type: CellContentType.empty }}),

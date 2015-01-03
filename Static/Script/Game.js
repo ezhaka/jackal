@@ -4,20 +4,22 @@ define(
     'player',
     'field',
     'pirate',
-    'stepManager',
     'shipsContainer',
-    'AvailableCellsProvider/AvailableCellsProvider',
+    'AvailableLocationsProvider/AvailableLocationsProvider',
     'movingObjectType',
-    'locationType'
+    'locationType',
+    'locationProvider',
+    'movingObjectProvider'
   ],
-  function (Allocator, Player, Field, Pirate, StepManager, ShipsContainer, AvailableCellsProvider, MovingObjectType, LocationType) {
+  function (Allocator, Player, Field, Pirate, ShipsContainer, AvailableLocationsProvider, MovingObjectType, LocationType, LocationProvider, MovingObjectProvider) {
     return function () {
       var pThis = this,
         model = {},
-        stepManager,
         allocator,
         shipContainer,
-        availableCellsProvider;
+        availableLocationsProvider,
+        locationProvider,
+        movingObjectProvider;
 
       pThis.init = init;
       pThis.render = render;
@@ -27,7 +29,8 @@ define(
         $container.html(model.field.render());
 
         model.pirates.forEach(function (pirate) {
-          var $pirateNode = pirate.render(getPirateCoordsAndSize(pirate));
+          var location = locationProvider.getByInfo(allocator.getObjectLocationInfo(pirate.getInfo()));
+          var $pirateNode = pirate.render(location);
           $container.append($pirateNode);
         });
 
@@ -36,24 +39,8 @@ define(
         });
       }
 
-      function getPirateCoordsAndSize(pirate) {
-        var pirateId = pirate.getId();
-        var locationInfo = allocator.getObjectLocation({ type: MovingObjectType.pirate, id: pirateId });
-        var location = locationInfo.cellId
-          ? model.field.getCellById(locationInfo.cellId)
-          : shipContainer.getById(locationInfo.shipId);
-
-        var relativePosition = location.getPiratePosition(pirateId);
-        var locationCoords = location.getOffset();
-
-        return {
-          coords: [relativePosition.coords[0] + locationCoords[0], relativePosition.coords[1] + locationCoords[1]],
-          size: relativePosition.size
-        };
-      }
-
       function getShipCoords(ship) {
-        var shipLocation = allocator.getObjectLocation({ type: MovingObjectType.ship, id: ship.getId() });
+        var shipLocation = allocator.getObjectLocationInfo({ type: MovingObjectType.ship, id: ship.getId() });
 
         if (shipLocation.type !== LocationType.cell) {
           throw new Error('ship is not on a cell');
@@ -72,7 +59,7 @@ define(
         })
       }
 
-      function getSelectedPirate() {
+      function getSelectedObject() {
         var selectedPirate = model.pirates.filter(function (p) {
           return p.getIsSelected();
         });
@@ -82,24 +69,24 @@ define(
 
       function onPirateClick(sender, args) {
         sender.select();
-        model.field.highlightAvailableCells(sender);
+        model.field.highlightCells(sender);
         shipContainer.highlightShips(
-          availableCellsProvider.getAvailableShips(sender, model.field.getPirateCell(sender.getId())));
+          availableLocationsProvider.getAvailableShips(sender, model.field.getPirateCell(sender.getId())));
       }
 
       function onCellClick(field, args) {
         var cell = args.cell;
-        var selectedPirate = getSelectedPirate();
+        var selectedObject = getSelectedObject();
 
-        if (!selectedPirate) {
+        if (!selectedObject) {
           return;
         }
 
-        if (availableCellsProvider.canMoveToCell(selectedPirate, model.field.getPirateCell(selectedPirate.getId()), cell.getId())) {
-          stepManager.move(selectedPirate.getId(), cell.getId());
+        if (availableLocationsProvider.canMoveToLocation(selectedObject, model.field.getPirateCell(selectedObject.getId()), cell.getId())) {
+          allocator.move(selectedObject.getInfo(), cell.getInfo());
         }
         else {
-          selectedPirate.deselect();
+          selectedObject.deselect();
         }
 
         model.field.removeCellsHighlight();
@@ -108,11 +95,11 @@ define(
 
 
       function onShipClick(ship) {
-        var selectedPirate = getSelectedPirate();
+        var selectedPirate = getSelectedObject();
 
         if (selectedPirate) {
-          if (availableCellsProvider.canMoveToShip(selectedPirate, model.field.getPirateCell(selectedPirate.getId()), ship.getId())) {
-            stepManager.moveToShip(ship.getId());
+          if (availableLocationsProvider.canMoveToShip(selectedPirate, model.field.getPirateCell(selectedPirate.getId()), ship.getId())) {
+            allocator.move(selectedPirate.getInfo(), ship.getInfo());
           }
           else {
             selectedPirate.deselect();
@@ -124,39 +111,30 @@ define(
       }
 
       function onMoveComplete(sender, args) {
-        var cell = model.field.getCellById(args.cellId);
-        var pirate = getPirateById(args.pirateId);
-        pirate.moveTo(getPirateCoordsAndSize(pirate));
+        var location = locationProvider.getByInfo(args.locationInfo);
+        var movingObject = movingObjectProvider.getByObjInfo(args.objInfo);
+        movingObject.moveTo(location);
 
-        if (cell.isClosed()) {
-          cell.setContent(args.cellContent);
+        if (location.isClosed()) {
+          location.setContent(args.cellContent);
         }
 
-        model.field.moveTo(pirate, cell);
-        pirate.moveTo(getPirateCoordsAndSize(pirate));
-
-        var movingCapabilities = cell.getMovingCapabilities();
-        var availableCells = model.field.getAvailableCells(pirate);
+        var movingCapabilities = location.getMovingCapabilities();
+        var availableCells = availableLocationsProvider.getAvailableLocations(movingObject);
         if (movingCapabilities.haveToMakeAnotherStep && availableCells.length == 1) {
-          stepManager.move(args.pirateId, availableCells[0].getId());
+          allocator.move(args.objInfo, availableCells[0].getInfo());
         }
 
-        if (pirate.getIsSelected()) {
-          pirate.deselect();
+        if (movingObject.getIsSelected()) {
+          movingObject.deselect();
         }
-      }
-
-      function getPirateById(id) {
-        return model.pirates.filter(function (p) {
-          return p.getId() == id;
-        })[0];
       }
 
       function initAllocator(piratesMeta, shipsMeta) {
         allocator = new Allocator();
 
         piratesMeta.forEach(function (pirate) {
-          allocator.setObjectLocation(
+          allocator.initObjectLocation(
             {
               type: MovingObjectType.pirate,
               id: pirate.id
@@ -165,13 +143,15 @@ define(
         });
 
         shipsMeta.forEach(function (ship) {
-          allocator.setObjectLocation(
+          allocator.initObjectLocation(
             {
               type: MovingObjectType.ship,
               id: ship.id
             },
             ship.location);
         });
+
+        allocator.MoveComplete.addHandler(onMoveComplete);
       }
 
       /*
@@ -211,13 +191,12 @@ define(
           return new Pirate(pirateMeta);
         });
 
-        stepManager = new StepManager();
-        stepManager.MoveComplete.addHandler(onMoveComplete);
-
         shipContainer = new ShipsContainer(modelMeta.ships);
         shipContainer.getShips().Click.addHandler(onShipClick);
 
-        availableCellsProvider = new AvailableCellsProvider(model.field.getCells());
+        availableLocationsProvider = new AvailableLocationsProvider(model.field.getCells());
+        locationProvider = new LocationProvider(model.field, shipContainer);
+        movingObjectProvider = new MovingObjectProvider(model.pirates, shipContainer);
       }
     };
   });

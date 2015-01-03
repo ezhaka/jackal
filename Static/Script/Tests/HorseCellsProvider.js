@@ -1,4 +1,4 @@
-define(['availableCellsProvider/horseCellsProvider', 'tests/stubCellsGenerator'],
+define(['../AvailableLocationsProvider/horseCellsProvider', 'tests/stubCellsGenerator'],
   function (HorseCellsProvider, StubCellsGenerator) {
     var cellsProvider = new HorseCellsProvider(StubCellsGenerator.generate(5, 5));
 

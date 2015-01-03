@@ -1,6 +1,6 @@
-define(['availableCellsProvider/cellHelper'],
+define(['/cellHelper'],
   function (CellHelper) {
-    return function (cells) {
+    return function (field) {
       this.getHorseCells = function (currentCoords) {
         var offsets = [
           [2, 1], [1, 2], [-2, 1], [-1, 2], [-2, -1], [-1, -2], [2, -1], [1, -2]
@@ -10,7 +10,7 @@ define(['availableCellsProvider/cellHelper'],
           return CellHelper.getAbsoluteCoords(currentCoords, offset);
         });
 
-        return CellHelper.getCellsByCoords(availableCoords, cells);
+        return field.getCellsByCoords(availableCoords);
       }
     }
   });

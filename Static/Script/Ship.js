@@ -1,5 +1,5 @@
 define(['ShipView', 'event'],
-  function (ShipView, Event) {
+  function (ShipView, Event, MovingObjectType) {
     return function (model) {
       var pThis = this,
         view = new ShipView();
@@ -7,9 +7,9 @@ define(['ShipView', 'event'],
       pThis.render = render;
       pThis.move = move;
       pThis.highlight = highlight;
-      pThis.getId = function () {
-        return model.id;
-      };
+      pThis.getInfo = getInfo;
+      pThis.getPiratePosition = getPiratePosition;
+      pThis.getId = getId;
 
       pThis.getCellId = function () {
         return model.cellId;
@@ -25,8 +25,23 @@ define(['ShipView', 'event'],
         view.move(pxCoords);
       }
 
+      function getId() {
+        return model.id;
+      }
+
+      function getPiratePosition(pirateId) {
+        return view.getPiratePosition(pirateId);
+      }
+
       function highlight() {
         view.highlight();
+      }
+
+      function getInfo() {
+        return {
+          id: model.id,
+          type: MovingObjectType.ship
+        }
       }
 
       function init() {
