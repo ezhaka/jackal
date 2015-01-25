@@ -13,6 +13,7 @@ define(['Event', 'PirateView', 'MovingObjectType'],
       pThis.getIsSelected = getIsSelected;
       pThis.moveTo = moveTo;
       pThis.getInfo = getInfo;
+      pThis.type = MovingObjectType.pirate;
 
       pThis.Click = new Event(pThis);
 
@@ -33,7 +34,7 @@ define(['Event', 'PirateView', 'MovingObjectType'],
       }
 
       function getPirateCoordsAndSize(location) {
-        var relativePosition = location.getPiratePosition(getId());
+        var relativePosition = location.getPiratePosition(pThis);
         var locationCoords = location.getOffset();
 
         return {

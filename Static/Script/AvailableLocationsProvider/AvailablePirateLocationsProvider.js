@@ -15,7 +15,7 @@ define(
       pThis.getLocations = getLocations;
 
       function getLocations(obj, objLocation) {
-        var availableCells = getAvailableByCurrentCellType(obj, objLocation);
+        var availableCells = getAvailableByCurrentCellType(obj.getId(), objLocation);
         var availableShips = shipsContainer.getShipsByCellIds(availableCells.map(function (c) {return c.getId();}));
         // todo: filter by other pirates...
         availableCells = WaterFilter.filterByWater(objLocation, availableCells);

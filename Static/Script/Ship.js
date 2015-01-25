@@ -1,18 +1,24 @@
-define(['ShipView', 'event', 'MovingObjectType'],
-  function (ShipView, Event, MovingObjectType) {
+define(['ShipView', 'event', 'MovingObjectType', 'MovingCapabilites'],
+  function (ShipView, Event, MovingObjectType, MovingCapabilites) {
     return function (model) {
       var pThis = this,
         view = new ShipView();
 
       pThis.render = render;
       pThis.move = move;
-      pThis.highlight = highlight;
+      pThis.toggleHighlight = toggleHighlight;
       pThis.getInfo = getInfo;
       pThis.getPiratePosition = getPiratePosition;
       pThis.getId = getId;
+      pThis.type = MovingObjectType.ship;
+      pThis.getOffset = getOffset;
+      pThis.getMovingCapabilities = getMovingCapabilities;
+      pThis.equals = function (loc) {
+        return loc.type == pThis.type && loc.getId() == pThis.getId();
+      };
 
       pThis.getCellId = function () {
-        return model.cellId;
+        return model.location.id;
       };
 
       pThis.Click = new Event(pThis);
@@ -29,12 +35,12 @@ define(['ShipView', 'event', 'MovingObjectType'],
         return model.id;
       }
 
-      function getPiratePosition(pirateId) {
-        return view.getPiratePosition(pirateId);
+      function getPiratePosition(pirate) {
+        return view.getPiratePosition(pirate.getId());
       }
 
-      function highlight() {
-        view.highlight();
+      function toggleHighlight(isHighlighted) {
+        view.toggleHighlight(isHighlighted);
       }
 
       function getInfo() {
@@ -42,6 +48,16 @@ define(['ShipView', 'event', 'MovingObjectType'],
           id: model.id,
           type: MovingObjectType.ship
         }
+      }
+
+      function getOffset() {
+        return view.getOffset();
+      }
+
+      function getMovingCapabilities() {
+        return {
+          type: MovingCapabilites.neighbor
+        };
       }
 
       function init() {

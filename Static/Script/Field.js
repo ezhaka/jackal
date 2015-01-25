@@ -22,7 +22,6 @@ define(
 
       pThis.render = render;
       pThis.bindEvents = bindEvents;
-      pThis.getPirateCell = getPirateCell;
       pThis.highlightCells = highlightCells;
       pThis.removeCellsHighlight = removeCellsHighlight;
       pThis.getCellById = getCellById;
@@ -65,17 +64,11 @@ define(
         })[0];
       }
 
-      function getPirateCell(pirateId) {
-        var cellInfo = modelMeta.allocator.getObjectLocationInfo({ type: MovingObjectType.pirate, id: pirateId });
-        var cellId = cellInfo.cellId;
-        return getCellById(cellId);
-      }
-
       function getCells() {
         return cells;
       }
 
-      function getCellsByCoords(coordsList, cells) {
+      function getCellsByCoords(coordsList) {
         return cells.filter(function (cell) {
           var cellCoords = cell.coords();
           var matchFound = false;
@@ -92,7 +85,7 @@ define(
 
       function init() {
         cells = modelMeta.cells.map(function (c) {
-          return new Cell($.extend(c, {allocator: modelMeta.allocator}));
+          return new Cell(c);
         });
 
         view = new FieldView({

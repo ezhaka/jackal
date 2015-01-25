@@ -22,7 +22,13 @@ define(['ship', 'event'],
 
       pThis.highlightShips = function(ships) {
         ships.forEach(function (s) {
-          s.highlight();
+          s.toggleHighlight(true);
+        })
+      };
+
+      pThis.removeHighlights = function() {
+        ships.forEach(function (s) {
+          s.toggleHighlight(false);
         })
       }
     }

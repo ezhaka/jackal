@@ -12,6 +12,7 @@ define(['Event'], function (Event) {
     pThis.getPiratePosition = getPiratePosition;
     pThis.getOffset = getOffset;
     pThis.toggleHighlight = toggleHighlight;
+    pThis.highlightOff = highlightOff;
     pThis.updateContent = updateContent;
 
     pThis.Click = new Event(pThis);
@@ -67,13 +68,20 @@ define(['Event'], function (Event) {
       });
     }
 
-    function toggleHighlight(highlighted) {
-      // todo: rewrite it
-      function toggleHighlight(c) {
-        (c[highlighted ? 'addClass' : 'removeClass'])('highlighted')
+    function toggleHighlight() {
+      toggleHighlight(true);
+    }
+
+    function highlightOff() {
+      toggleHighlight(false);
+    }
+
+    function toggleHighlight(isHighlighted) {
+      function toggle(c) {
+        (c[isHighlighted ? 'addClass' : 'removeClass'])('highlighted')
       }
-      toggleHighlight($cellBack);
-      toggleHighlight($cellContent);
+      toggle($cellBack);
+      toggle($cellContent);
     }
 
     function getOffset() {

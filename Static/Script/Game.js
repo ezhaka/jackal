@@ -29,25 +29,15 @@ define(
         $container.html(model.field.render());
 
         model.pirates.forEach(function (pirate) {
-          var location = locationProvider.getByInfo(allocator.getObjectLocationInfo(pirate.getInfo()));
+          var location = allocator.getObjectLocation(pirate);
           var $pirateNode = pirate.render(location);
           $container.append($pirateNode);
         });
 
         shipContainer.getShips().forEach(function (ship) {
-          var location = locationProvider.getByInfo(allocator.getObjectLocationInfo(ship.getInfo()));
+          var location = allocator.getObjectLocation(ship);
           $container.append(ship.render(location));
         });
-      }
-
-      function getShipCoords(ship) {
-        var shipLocation = allocator.getObjectLocationInfo({ type: MovingObjectType.ship, id: ship.getId() });
-
-        if (shipLocation.type !== LocationType.cell) {
-          throw new Error('ship is not on a cell');
-        }
-
-        return model.field.getCellById(shipLocation.cellId).getOffset();
       }
 
       function bindEvents() {
@@ -68,11 +58,11 @@ define(
         return selectedPirate.length > 0 ? selectedPirate[0] : null;
       }
 
-      function onPirateClick(sender, args) {
-        sender.select();
-        model.field.highlightCells(sender);
-        shipContainer.highlightShips(
-          availableLocationsProvider.getAvailableShips(sender, model.field.getPirateCell(sender.getId())));
+      function onPirateClick(pirate, args) {
+        pirate.select();
+        var pirateLocation = allocator.getObjectLocation(pirate);
+        var availableLocations = availableLocationsProvider.getAvailableLocations(pirate, pirateLocation);
+        availableLocations.forEach(function (l) { l.toggleHighlight(true); });
       }
 
       function onCellClick(field, args) {
@@ -83,8 +73,9 @@ define(
           return;
         }
 
-        if (availableLocationsProvider.canMoveToLocation(selectedObject, model.field.getPirateCell(selectedObject.getId()), cell.getId())) {
-          allocator.move(selectedObject.getInfo(), cell.getInfo());
+        var selectedObjLocation = allocator.getObjectLocation(selectedObject);
+        if (availableLocationsProvider.canMoveToLocation(selectedObject, selectedObjLocation, cell)) {
+          allocator.move(selectedObject, cell);
         }
         else {
           selectedObject.deselect();
@@ -99,8 +90,8 @@ define(
         var selectedPirate = getSelectedObject();
 
         if (selectedPirate) {
-          if (availableLocationsProvider.canMoveToShip(selectedPirate, model.field.getPirateCell(selectedPirate.getId()), ship.getId())) {
-            allocator.move(selectedPirate.getInfo(), ship.getInfo());
+          if (availableLocationsProvider.canMoveToLocation(selectedPirate, allocator.getObjectLocation(selectedPirate), ship)) {
+            allocator.move(selectedPirate, ship);
           }
           else {
             selectedPirate.deselect();
@@ -112,18 +103,14 @@ define(
       }
 
       function onMoveComplete(sender, args) {
-        var location = locationProvider.getByInfo(args.locationInfo);
-        var movingObject = movingObjectProvider.getByObjInfo(args.objInfo);
+        var location = args.location;
+        var movingObject = args.obj;
         movingObject.moveTo(location);
 
-        if (location.isClosed()) {
-          location.setContent(args.cellContent);
-        }
-
         var movingCapabilities = location.getMovingCapabilities();
-        var availableCells = availableLocationsProvider.getAvailableLocations(movingObject);
+        var availableCells = availableLocationsProvider.getAvailableLocations(movingObject, location);
         if (movingCapabilities.haveToMakeAnotherStep && availableCells.length == 1) {
-          allocator.move(args.objInfo, availableCells[0].getInfo());
+          allocator.move(args.obj, availableCells[0]);
         }
 
         if (movingObject.getIsSelected()) {
@@ -132,7 +119,7 @@ define(
       }
 
       function initAllocator(piratesMeta, shipsMeta) {
-        allocator = new Allocator();
+        allocator = new Allocator(model.pirates, model.field, shipContainer);
 
         piratesMeta.forEach(function (pirate) {
           allocator.initObjectLocation(
@@ -175,8 +162,6 @@ define(
        }
        */
       function init(modelMeta) {
-        initAllocator(modelMeta.pirates, modelMeta.ships);
-
         model.players = modelMeta.players.map(function (playerMeta) {
           return new Player(playerMeta);
         });
@@ -184,8 +169,7 @@ define(
         model.field = new Field({
           cells: modelMeta.cells,
           pirates: modelMeta.pirates,
-          fieldSize: modelMeta.fieldSize,
-          allocator: allocator
+          fieldSize: modelMeta.fieldSize
         });
 
         model.pirates = modelMeta.pirates.map(function (pirateMeta) {
@@ -195,9 +179,8 @@ define(
         shipContainer = new ShipsContainer(modelMeta.ships);
         shipContainer.getShips().forEach(function (s) { s.Click.addHandler(onShipClick); });
 
-        availableLocationsProvider = new AvailableLocationsProvider(model.field.getCells());
-        locationProvider = new LocationProvider(model.field, shipContainer);
-        movingObjectProvider = new MovingObjectProvider(model.pirates, shipContainer);
+        availableLocationsProvider = new AvailableLocationsProvider(model.field, shipContainer);
+        initAllocator(modelMeta.pirates, modelMeta.ships);
       }
     };
   });

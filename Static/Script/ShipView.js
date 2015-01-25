@@ -7,7 +7,8 @@ define(['event'],
 
       pThis.render = render;
       pThis.move = move;
-      pThis.highlight = highlight;
+      pThis.getOffset = getOffset;
+      pThis.toggleHighlight = toggleHighlight;
       pThis.getPiratePosition = getPiratePosition;
       pThis.Click = new Event(pThis);
 
@@ -30,8 +31,13 @@ define(['event'],
         });
       }
 
-      function highlight() {
-        $node.addClass(highlightedClass);
+      function toggleHighlight(isHighlighted) {
+        $node[isHighlighted ? 'addClass' : 'removeClass'](highlightedClass);
+      }
+
+      function getOffset() {
+        var offset = $node.offset();
+        return [offset.left, offset.top];
       }
 
       function getPiratePosition(pirateId) {
@@ -41,8 +47,8 @@ define(['event'],
 
         return {
           coords: [
-            $container.width() / 2 - defaultPirateWidth / 2,
-            $container.height() / 2 - defaultPirateHeight / 2
+            $node.width() / 2 - defaultPirateWidth / 2,
+            $node.height() / 2 - defaultPirateHeight / 2
           ],
           size: [defaultPirateWidth, defaultPirateHeight]
         };

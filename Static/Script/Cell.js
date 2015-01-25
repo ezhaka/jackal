@@ -28,6 +28,10 @@ define(['Event', 'cells/CellContentFactory', 'MovingCapabilites', 'CellView', 'M
       pThis.setContent = setContent;
       pThis.getContent = getContent;
       pThis.getInfo = getInfo;
+      pThis.type = LocationType.cell;
+      pThis.equals = function (loc) {
+        return loc.type == pThis.type && loc.getId() == pThis.getId();
+      };
 
       pThis.Click = new Event(pThis);
 
@@ -75,21 +79,18 @@ define(['Event', 'cells/CellContentFactory', 'MovingCapabilites', 'CellView', 'M
        }
        or undefined if pirate is not on the field
        */
-      function getPiratePosition(pirateId) {
-        var pirateLocationInfo = modelMeta.allocator.getObjectLocationInfo({ id: pirateId, type: MovingObjectType.pirate });
+      function getPiratePosition(pirate) {
 
-        if (pirateLocationInfo.type != LocationType.cell && pirateLocationInfo.id != modelMeta.id) {
-          throw new Error('Pirate is not on the cell, pirateId: ' + pirateId);
-        }
-
-        var neighbourPirateIds = modelMeta.allocator
-          .getObjectsByLocationInfo(new LocationInfo({ type: LocationType.cell, id: modelMeta.id, step: pirateLocationInfo.step }))
-          .filter(function (pid) {
-            return pid != pirateId;
-          });
+        var neighbourPirateIds = [];
+        // todo: pass neighbors from parameter?
+        /*modelMeta.allocator
+          .getObjectsByLocation(pThis)
+          .filter(function (obj) {
+            return obj.type == MovingObjectType.pirate && obj.getId() != pirate.getId();
+          });*/
 
         return view.getPiratePosition(
-          pirateId,
+          pirate.getId(),
           neighbourPirateIds);
       }
 
@@ -104,13 +105,13 @@ define(['Event', 'cells/CellContentFactory', 'MovingCapabilites', 'CellView', 'M
         })
       }
 
-      function toggleHighlight(highlighted) {
+      function toggleHighlight(isHighlighted) {
 //			if (cellContent) {
-//				cellContent.toggleHighlight(highlighted);
+//				cellContent.toggleHighlight(isHighlighted);
 //				return;
 //			}
 
-        view.toggleHighlight(highlighted);
+        view.toggleHighlight(isHighlighted);
       }
 
       /*
