@@ -14,12 +14,6 @@ define(['ship', 'event'],
         })[0];
       };
 
-      pThis.getShipsByCellIds = function(cellIds) {
-        return ships.filter(function (s) {
-          return cellIds.indexOf(s.getCellId()) != -1;
-        })
-      };
-
       pThis.highlightShips = function(ships) {
         ships.forEach(function (s) {
           s.toggleHighlight(true);

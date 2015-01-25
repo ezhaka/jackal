@@ -1,5 +1,5 @@
-define(['LocationType', 'Event', 'LocationProvider', 'MovingObjectProvider'],
-  function (LocationType, Event, LocationProvider, MovingObjectProvider) {
+define(['LocationType', 'Event', 'LocationProvider', 'MovingObjectProvider', 'ArrayUtils'],
+  function (LocationType, Event, LocationProvider, MovingObjectProvider, ArrayUtils) {
 
     return function (pirates, field, shipContainer) {
       var pThis = this,
@@ -10,6 +10,7 @@ define(['LocationType', 'Event', 'LocationProvider', 'MovingObjectProvider'],
       pThis.getObjectLocation = getObjectLocation;
       pThis.initObjectLocation = setObjectLocation;
       pThis.getObjectsByLocation = getObjectsByLocation;
+      pThis.getObjectsByLocations = getObjectsByLocations;
       pThis.move = move;
 
       pThis.MoveComplete = new Event(this);
@@ -34,6 +35,10 @@ define(['LocationType', 'Event', 'LocationProvider', 'MovingObjectProvider'],
         return locationProvider.getByInfo(locationInfo);
       }
 
+      function getObjectsByLocations(locations) {
+        return ArrayUtils.mapMany(locations, function (l) { return getObjectsByLocation(l); });
+      }
+
       function getObjectsByLocation(location) {
         var result = [];
 
@@ -44,8 +49,8 @@ define(['LocationType', 'Event', 'LocationProvider', 'MovingObjectProvider'],
             result.push(movingObjProvider.getByObjInfo(objectInfo));
           }
         }
-        return result;
 
+        return result;
       }
 
       function setObjectLocation(objInfo, locationInfo) {

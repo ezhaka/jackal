@@ -11,13 +11,13 @@ define(
   ],
   function (MovingCapabilites, Direction, CellContentType, NeighborCellsProvider, HorseCellsProvider, WaterFilter, MovingObjectType, AvailablePirateLocationsProvider) {
     // todo: use allocator instead of cells ?
-    return function (field, shipsContainer) {
+    return function (field, shipsContainer, allocator) {
       var pThis = this;
       pThis.getAvailableLocations = getAvailableLocations;
       pThis.canMoveToLocation = canMoveToLocation;
 
       function canMoveToLocation(obj, objLocation, targetLocation) {
-        return pThis.getAvailableLocations(obj, objLocation)
+        return getAvailableLocations(obj, objLocation)
             .filter(function (l) {
               return targetLocation.equals(l);
             })
@@ -26,7 +26,7 @@ define(
 
       function getAvailableLocations(obj, objLocation) {
         if (obj.type == MovingObjectType.pirate) {
-          var provider = new AvailablePirateLocationsProvider(field, shipsContainer);
+          var provider = new AvailablePirateLocationsProvider(field, shipsContainer, allocator);
           return provider.getLocations(obj, objLocation);
         }
 

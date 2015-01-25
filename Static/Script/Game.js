@@ -142,25 +142,6 @@ define(
         allocator.MoveComplete.addHandler(onMoveComplete);
       }
 
-      /*
-       Accepts model: {
-       players: [{
-       id: 0,
-       name: ''
-       }, ...],
-       cells: [{
-       id: 0,
-       type: 0,
-       coords: []
-       }, ...],
-       pirates: [{
-       id: 0,
-       playerId: 0,
-       cellId: 0,
-       step: 0
-       }, ...]
-       }
-       */
       function init(modelMeta) {
         model.players = modelMeta.players.map(function (playerMeta) {
           return new Player(playerMeta);
@@ -179,8 +160,8 @@ define(
         shipContainer = new ShipsContainer(modelMeta.ships);
         shipContainer.getShips().forEach(function (s) { s.Click.addHandler(onShipClick); });
 
-        availableLocationsProvider = new AvailableLocationsProvider(model.field, shipContainer);
         initAllocator(modelMeta.pirates, modelMeta.ships);
+        availableLocationsProvider = new AvailableLocationsProvider(model.field, shipContainer, allocator);
       }
     };
   });

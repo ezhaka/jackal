@@ -17,10 +17,6 @@ define(['ShipView', 'event', 'MovingObjectType', 'MovingCapabilites'],
         return loc.type == pThis.type && loc.getId() == pThis.getId();
       };
 
-      pThis.getCellId = function () {
-        return model.location.id;
-      };
-
       pThis.Click = new Event(pThis);
 
       function render(location) {

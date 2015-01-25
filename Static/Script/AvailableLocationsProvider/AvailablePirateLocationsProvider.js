@@ -1,30 +1,39 @@
 define(
   [
     'movingCapabilites',
-    'direction',
-    'cells/cellContentType',
     'availableLocationsProvider/NeighborCellsProvider',
     'availableLocationsProvider/HorseCellsProvider',
     'availableLocationsProvider/WaterFilter',
-    'MovingObjectType',
-    'availableLocationsProvider/AvailablePirateLocationsProvider'
+    'LocationType',
+    'MovingObjectType'
   ],
-  function (MovingCapabilites, Direction, CellContentType, NeighborCellsProvider, HorseCellsProvider, WaterFilter, MovingObjectType, AvailablePirateLocationsProvider) {
-    return function (field, shipsContainer) {
+  function (MovingCapabilites, NeighborCellsProvider, HorseCellsProvider, WaterFilter, LocationType, MovingObjectType) {
+    return function (field, shipsContainer, allocator) {
       var pThis = this;
       pThis.getLocations = getLocations;
 
       function getLocations(obj, objLocation) {
-        var availableCells = getAvailableByCurrentCellType(obj.getId(), objLocation);
-        var availableShips = shipsContainer.getShipsByCellIds(availableCells.map(function (c) {return c.getId();}));
+        var availableCells = getAvailableByCurrentMovingCapabilities(obj.getId(), objLocation);
+        var objectsOnAvailableCells = allocator.getObjectsByLocations(availableCells);
+        var availableShips = objectsOnAvailableCells.filter(function (o) { return o.type == MovingObjectType.ship; });
+
         // todo: filter by other pirates...
         availableCells = WaterFilter.filterByWater(objLocation, availableCells);
         return availableCells.concat(availableShips);
       }
 
-      function getAvailableByCurrentCellType(pirateId, pirateCell) {
-        var currentCoords = pirateCell.coords();
-        var movingCapabilities = pirateCell.getMovingCapabilities(pirateId);
+      function getCoords(location) {
+        // todo: it's better to have method coords() in ship, but ship doesn't know about allocator and its cell
+        if (location.type == LocationType.ship) {
+          return allocator.getObjectLocation(location).coords();
+        }
+
+        return location.coords();
+      }
+
+      function getAvailableByCurrentMovingCapabilities(pirateId, location) {
+        var currentCoords = getCoords(location);
+        var movingCapabilities = location.getMovingCapabilities(pirateId);
 
         if (movingCapabilities.type == MovingCapabilites.neighbor
           || movingCapabilities.type == MovingCapabilites.water) {

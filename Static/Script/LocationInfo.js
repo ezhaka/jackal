@@ -11,7 +11,7 @@ define(function () {
     pThis.equals = function (other) {
       // todo: refactor
       return pThis.type == other.type
-        && pThis.cellId === other.cellId
+        && pThis.id === other.id
         && pThis.step === other.step
         && pThis.shipId == other.shipId;
     }
