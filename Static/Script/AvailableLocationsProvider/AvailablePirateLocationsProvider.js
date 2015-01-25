@@ -4,10 +4,11 @@ define(
     'availableLocationsProvider/NeighborCellsProvider',
     'availableLocationsProvider/HorseCellsProvider',
     'availableLocationsProvider/WaterFilter',
+    'availableLocationsProvider/CoordsHelper',
     'LocationType',
     'MovingObjectType'
   ],
-  function (MovingCapabilites, NeighborCellsProvider, HorseCellsProvider, WaterFilter, LocationType, MovingObjectType) {
+  function (MovingCapabilites, NeighborCellsProvider, HorseCellsProvider, WaterFilter, CoordsHelper, LocationType, MovingObjectType) {
     return function (field, shipsContainer, allocator) {
       var pThis = this;
       pThis.getLocations = getLocations;
@@ -22,17 +23,8 @@ define(
         return availableCells.concat(availableShips);
       }
 
-      function getCoords(location) {
-        // todo: it's better to have method coords() in ship, but ship doesn't know about allocator and its cell
-        if (location.type == LocationType.ship) {
-          return allocator.getObjectLocation(location).coords();
-        }
-
-        return location.coords();
-      }
-
       function getAvailableByCurrentMovingCapabilities(pirateId, location) {
-        var currentCoords = getCoords(location);
+        var currentCoords = CoordsHelper.getCoords(location, allocator);
         var movingCapabilities = location.getMovingCapabilities(pirateId);
 
         if (movingCapabilities.type == MovingCapabilites.neighbor

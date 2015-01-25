@@ -24,6 +24,10 @@ define(['ship', 'event'],
         ships.forEach(function (s) {
           s.toggleHighlight(false);
         })
+      };
+
+      pThis.getSelectedShip = function () {
+        return ships.filter(function (s) { return s.getIsSelected(); })[0];
       }
     }
   });

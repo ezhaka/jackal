@@ -17,9 +17,7 @@ define(
         model = {},
         allocator,
         shipContainer,
-        availableLocationsProvider,
-        locationProvider,
-        movingObjectProvider;
+        availableLocationsProvider;
 
       pThis.init = init;
       pThis.render = render;
@@ -55,14 +53,11 @@ define(
           return p.getIsSelected();
         });
 
-        return selectedPirate.length > 0 ? selectedPirate[0] : null;
+        return selectedPirate.length > 0 ? selectedPirate[0] : shipContainer.getSelectedShip();
       }
 
       function onPirateClick(pirate, args) {
-        pirate.select();
-        var pirateLocation = allocator.getObjectLocation(pirate);
-        var availableLocations = availableLocationsProvider.getAvailableLocations(pirate, pirateLocation);
-        availableLocations.forEach(function (l) { l.toggleHighlight(true); });
+        onMovableObjClick(pirate);
       }
 
       function onCellClick(field, args) {
@@ -100,6 +95,16 @@ define(
           model.field.removeCellsHighlight();
           shipContainer.removeHighlights();
         }
+        else {
+          onMovableObjClick(ship);
+        }
+      }
+
+      function onMovableObjClick(obj) {
+        obj.select();
+        var objLocation = allocator.getObjectLocation(obj);
+        var availableLocations = availableLocationsProvider.getAvailableLocations(obj, objLocation);
+        availableLocations.forEach(function (l) { l.toggleHighlight(true); });
       }
 
       function onMoveComplete(sender, args) {

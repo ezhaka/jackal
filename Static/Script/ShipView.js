@@ -3,13 +3,16 @@ define(['event'],
     return function () {
       var pThis = this,
         $node,
-        highlightedClass = 'highlighted';
+        highlightedClass = 'highlighted',
+        selectedClass = 'selected';
 
       pThis.render = render;
       pThis.move = move;
       pThis.getOffset = getOffset;
       pThis.toggleHighlight = toggleHighlight;
       pThis.getPiratePosition = getPiratePosition;
+      pThis.select = select;
+      pThis.deselect = deselect;
       pThis.Click = new Event(pThis);
 
       function render(pxCoords) {
@@ -25,7 +28,7 @@ define(['event'],
       }
 
       function move(pxCoords) {
-        $node.css({
+        $node.animate({
           left: pxCoords[0] + 'px',
           top: pxCoords[1] + 'px'
         });
@@ -38,6 +41,14 @@ define(['event'],
       function getOffset() {
         var offset = $node.offset();
         return [offset.left, offset.top];
+      }
+
+      function select() {
+        $node.addClass(selectedClass);
+      }
+
+      function deselect() {
+        $node.removeClass(selectedClass);
       }
 
       function getPiratePosition(pirateId) {

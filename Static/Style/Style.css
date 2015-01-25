@@ -56,6 +56,10 @@
     z-index: 2;
 }
 
+.ship.selected {
+    border: 1px solid lawngreen;
+}
+
 .ship.highlighted,
 .cellContainer .cellBack.highlighted,
 .cellContainer .cellContentWrapper.highlighted {
